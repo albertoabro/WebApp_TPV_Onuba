@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300&display=swap');
+.card{
+    font-family: 'Rubik', sans-serif;
+}
+.main{
+    display:none !important;
+}
+.active{
+    display:block !important;
+}
+
+.card h4{
+    font-weight:bold;
+}
+.input_text{
+    margin-top:-10px;
+}
+.input_text p:nth-child(1){
+    font-size:13px;
+}
+.input_text p:nth-child(2){
+    font-weight:700;
+    font-size:13px;
+}
+.noUnderlined{
+    text-decoration: none!important;
+}
