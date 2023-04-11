@@ -7,7 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -20,6 +20,8 @@ import tfg.front.service.user.login.LoginRequest;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
+
 @Slf4j
 @Service
 public class UserServiceImpl extends AbstractClient implements UserService{
@@ -39,8 +41,7 @@ public class UserServiceImpl extends AbstractClient implements UserService{
             }
         }
         catch (HttpClientErrorException e) {
-            User user = null;
-            return user;
+            return null;
         }
         return null;
     }
@@ -49,18 +50,19 @@ public class UserServiceImpl extends AbstractClient implements UserService{
     public List<User> getUsers() throws JsonProcessingException {
         String uri = baseUrl+"/users";
 
-        ResponseEntity<List> response =
-                restTemplate.exchange(uri, HttpMethod.GET, null, List.class);
+        ResponseEntity<List> response = restTemplate.exchange(uri, HttpMethod.GET, null, List.class);
 
-        List<User>users = new ArrayList<>();
+        return getUsers(response);
+    }
+
+    private List<User> getUsers(ResponseEntity<List> response) throws JsonProcessingException {
+        List<User>users;
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(response.getBody());
-        log.info("String: "+json );
         Gson gson = new Gson();
         Type typeUserList = new TypeToken<ArrayList<User>>(){}.getType();
         users = gson.fromJson(json,typeUserList);
-        for(User u : users)
-            log.info("Usuario: "+ u.toString());
+
         return users;
     }
 
@@ -86,6 +88,34 @@ public class UserServiceImpl extends AbstractClient implements UserService{
     }
 
     @Override
+    public int searchPosition(List<User> employees,int id) {
+        boolean found = false;
+        int counter=0, pos=-1;
+
+        while (counter<employees.size() && !found){
+            if(employees.get(counter).getIdUser()==id)
+                found=true;
+
+            else
+                counter++;
+        }
+        if(found)
+            pos = counter;
+
+        return pos;
+    }
+
+    @Override
+    public List<User> searchEmployeeByUserName(String userName) throws JsonProcessingException {
+        String searchName = userName+"%";
+        String uri = baseUrl+"/users/search/"+searchName;
+        ResponseEntity<List> response = restTemplate.exchange(uri, HttpMethod.GET, null, List.class);
+
+        return getUsers(response);
+
+    }
+
+    @Override
     public boolean createEmployee(User user) {
         boolean created = false;
         String uri = baseUrl+"/users";
@@ -96,8 +126,26 @@ public class UserServiceImpl extends AbstractClient implements UserService{
             }
         }
         catch (HttpClientErrorException e) {
-
+            log.error("Error: "+e);
         }
         return created;
+    }
+
+    @Override
+    public boolean updateEmployee(User user) {
+        boolean updated = false;
+        String id = String.valueOf(user.getIdUser());
+        String uri = baseUrl+"/users/"+id;
+        HttpEntity<User> entity = new HttpEntity<>(user);
+        try {
+            ResponseEntity<User> response = restTemplate.exchange(uri,HttpMethod.PUT,entity,User.class);
+            if (response.getStatusCode().is2xxSuccessful())
+                updated=true;
+
+        }catch (HttpClientErrorException e){
+            log.error("Error: "+e);
+        }
+
+        return updated;
     }
 }

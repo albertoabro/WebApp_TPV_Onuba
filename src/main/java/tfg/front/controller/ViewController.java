@@ -12,10 +12,10 @@ public class ViewController {
     @GetMapping("/index")
     public String loginSuccess(){return "index";}
     @GetMapping("/article")
-    public String viewArticle(){return "article";}
+    public String viewArticle(){return "article/article";}
     @GetMapping("/production")
-    public String viewProduction(){return "production";}
+    public String viewProduction(){return "traceability/production";}
     @GetMapping("/family")
-    public String viewFamily(){return "family";}
+    public String viewFamily(){return "family/family";}
 
 }

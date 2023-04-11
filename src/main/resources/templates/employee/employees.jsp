@@ -19,8 +19,11 @@
                     <div class="card-header text-center">
                         <label class="fw-bold mt-2 text-end" th:text="${employee.userName}"></label>
                         <div class="card-body text-center">
-                            <a class="noUnderlined" th:href="@{/users/employee(id=${employee.id})}">Datos</a>
+                            <a class="noUnderlined" th:href="@{/users/employee(id=${employee.idUser})}">Datos</a>
                         </div>
+                    </div>
+                    <div class="card-footer">
+                        <a class="noUnderlined" th:href="@{/users/editEmployee(id=${employee.idUser})}">Editar</a>
                     </div>
                 </div>
             </div>

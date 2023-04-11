@@ -8,7 +8,7 @@
     <title>Tpv Onuba</title>
 </head>
 <body>
-<section> <div th:insert="menu"></div></section>
+<section> <div th:insert="~{menu}"></div></section>
 
 <section>
     <nav class="navbar navbar-light bg-light md">

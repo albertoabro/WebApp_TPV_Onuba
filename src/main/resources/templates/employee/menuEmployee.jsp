@@ -25,8 +25,8 @@
                             <li class="nav-item">
                                 <a class="nav-link active" aria-current="page" href="/users/registerEmployee"> Nuevo Empleado</a>
                             </li>
-                            <form class="d-flex">
-                                <input class="form-control me-2" type="search" placeholder="Buscar por nombre Usuario" aria-label="Search">
+                            <form class="d-flex" method="get" action="/users/searchEmployee">
+                                <input class="form-control me-2" name="userName" type="search" placeholder="Buscar por nombre Usuario" aria-label="Search">
                                 <button class="btn btn-outline-success" type="submit">Buscar</button>
                             </form>
                         </ul>

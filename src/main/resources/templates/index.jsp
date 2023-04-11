@@ -8,21 +8,6 @@
     <title>Tpv Onuba</title>
 </head>
 <body>
-<div th:insert="menu"></div>
-<table>
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="user: ${session.user}">
-        <td th:text="${user.idUser}"></td>
-        <td th:text="${user.userName}"></td>
-    </tr>
-
-    </tbody>
-</table>
+<div th:insert="~{menu}"></div>
 </body>
 </html>

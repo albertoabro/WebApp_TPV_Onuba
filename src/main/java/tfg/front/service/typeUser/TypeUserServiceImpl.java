@@ -45,36 +45,4 @@ public class TypeUserServiceImpl extends AbstractClient implements TypeUserServi
 
         return typeUsers;
     }
-
-    @Override
-    public TypeUser searchTypeUserById(List<TypeUser> typeUsers, int id) {
-        boolean found = false;
-        int counter=0;
-        TypeUser typeUser;
-
-        while (counter<typeUsers.size() && !found)
-        {
-            if(typeUsers.get(counter).getId() == id)
-                found=true;
-            else
-                counter++;
-        }
-
-        if(found)
-            typeUser = typeUsers.get(counter);
-        else
-            typeUser=null;
-
-        return typeUser;
-    }
-
-    @Override
-    public boolean createTypeUser(TypeUser typeUser) {
-        return false;
-    }
-
-    @Override
-    public boolean updateTypeUser(TypeUser typeUser) {
-        return false;
-    }
 }

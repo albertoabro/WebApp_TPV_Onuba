@@ -41,6 +41,14 @@
                         </li>
 
                         <li class="nav-item">
+                            <a class="nav-link active" href="#">Productos</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/providers/providers">Proveedores</a>
+                        </li>
+
+                        <li class="nav-item">
                             <a class="nav-link active" href="#">Ventas</a>
                         </li>
 
