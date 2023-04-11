@@ -1,5 +1,6 @@
 package tfg.front.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +22,7 @@ public class TypeUserController {
     public TypeUserController(TypeUserService typeUserService) {this.typeUserService = typeUserService;}
 
 
-    public List<String> getDenomination(){
+    public List<String> getDenomination() throws JsonProcessingException {
         typesUser = typeUserService.getTypesUsers();
         List<String> denominations = new ArrayList<>();
         for (TypeUser typeUser:typesUser) {

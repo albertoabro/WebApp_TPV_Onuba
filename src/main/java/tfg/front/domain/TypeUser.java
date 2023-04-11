@@ -1,12 +1,12 @@
 package tfg.front.domain;
 
 public class TypeUser {
-    int id;
+    int idTypeUser;
     String denomination;
     int rol;
 
-    public TypeUser(int id, String denomination, int rol) {
-        this.id = id;
+    public TypeUser(int idTypeUser, String denomination, int rol) {
+        this.idTypeUser = idTypeUser;
         this.denomination = denomination;
         this.rol = rol;
     }
@@ -15,11 +15,11 @@ public class TypeUser {
     }
 
     public int getId() {
-        return id;
+        return idTypeUser;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setId(int idTypeUser) {
+        this.idTypeUser = idTypeUser;
     }
 
     public String getDenomination() {
@@ -36,5 +36,14 @@ public class TypeUser {
 
     public void setRol(int rol) {
         this.rol = rol;
+    }
+
+    @Override
+    public String toString() {
+        return "TypeUser{" +
+                "idTypeUser=" + idTypeUser +
+                ", denomination='" + denomination + '\'' +
+                ", rol=" + rol +
+                '}';
     }
 }

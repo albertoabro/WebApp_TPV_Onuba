@@ -1,6 +1,10 @@
 package tfg.front.service.user;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -13,6 +17,8 @@ import tfg.front.domain.User;
 import tfg.front.service.AbstractClient;
 import tfg.front.service.user.login.LoginRequest;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 @Slf4j
 @Service
@@ -40,12 +46,21 @@ public class UserServiceImpl extends AbstractClient implements UserService{
     }
 
     @Override
-    public List<User> getUsers() {
+    public List<User> getUsers() throws JsonProcessingException {
         String uri = baseUrl+"/users";
 
-        ResponseEntity<List<User>> response =
-                restTemplate.exchange(uri, HttpMethod.GET, null, new ParameterizedTypeReference<List<User>>() {});
-        List<User>users = response.getBody();
+        ResponseEntity<List> response =
+                restTemplate.exchange(uri, HttpMethod.GET, null, List.class);
+
+        List<User>users = new ArrayList<>();
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(response.getBody());
+        log.info("String: "+json );
+        Gson gson = new Gson();
+        Type typeUserList = new TypeToken<ArrayList<User>>(){}.getType();
+        users = gson.fromJson(json,typeUserList);
+        for(User u : users)
+            log.info("Usuario: "+ u.toString());
         return users;
     }
 
@@ -56,7 +71,7 @@ public class UserServiceImpl extends AbstractClient implements UserService{
         User searchEmployee;
 
         while (counter<employees.size() && !found){
-            if(employees.get(counter).getId()==id)
+            if(employees.get(counter).getIdUser()==id)
                 found=true;
 
             else

@@ -18,7 +18,7 @@
     </thead>
     <tbody>
     <tr th:each="user: ${session.user}">
-        <td th:text="${user.id}"></td>
+        <td th:text="${user.idUser}"></td>
         <td th:text="${user.userName}"></td>
     </tr>
 

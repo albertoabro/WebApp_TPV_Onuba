@@ -1,5 +1,6 @@
 package tfg.front.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -59,7 +60,7 @@ public class UserController {
         response.sendRedirect("/");
     }
     @GetMapping( "/employees")
-    public ModelAndView getUsers(){
+    public ModelAndView getUsers() throws JsonProcessingException {
         List<User> users = userService.getUsers();
         employees=users;
         ModelAndView modelAndView = new ModelAndView("/employee/employees");
@@ -68,7 +69,7 @@ public class UserController {
     }
 
     @GetMapping("/employee")
-    public ModelAndView getUserById(HttpServletRequest request){
+    public ModelAndView getUserById(HttpServletRequest request) throws JsonProcessingException {
         id = Integer.parseInt(request.getParameter("id"));
         User searchEmployee = userService.searchEmployeeById(employees, id);
         ModelAndView modelAndView;
@@ -84,9 +85,10 @@ public class UserController {
     }
 
     @GetMapping("/registerEmployee")
-    public ModelAndView registerEmployee(){
+    public ModelAndView registerEmployee() throws JsonProcessingException {
         List<TypeUser> typesUser = typeUserService.getTypesUsers();
-
+        for(TypeUser u :typesUser)
+            log.info("Tipos: "+u.toString());
         ModelAndView modelAndView = new ModelAndView("/employee/createEmployee");
         modelAndView.addObject("typesUser",typesUser);
 
@@ -95,16 +97,19 @@ public class UserController {
 
     @PostMapping("/addEmployee")
     public void createEmployee(HttpSession session, HttpServletResponse response, @RequestParam String userName, @RequestParam String password, @RequestParam int typeUser, @RequestParam String address, @RequestParam String phone) throws IOException {
-        this.id = employees.get(employees.size()-1).getId();
+        this.id = employees.get(employees.size()-1).getIdUser()+1;
+        log.info("Num empleados: "+employees.size());
+        log.info("last Employee: "+employees.get(employees.size()-1).toString());
+        log.info("Id: "+id);
         this.userName=userName;
         this.password=password;
         this.idTypeUser=typeUser;
         this.address=address;
         this.phone=phone;
-        String msg;
+        String msg="";
         User user = new User(id,userName,password,address,phone,typeUser);
-
-        if(userService.createEmployee(user)){
+        log.info("Usuario: "+user.toString());
+        /*if(userService.createEmployee(user)){
             employees.add(user);
             msg = "Empleado creado con éxito";
         }
@@ -112,7 +117,7 @@ public class UserController {
         else
         {
             msg = "Error al crear el empleado";
-        }
+        }*/
 
         session.setAttribute("msg",msg);
         response.sendRedirect("/users/employees");
