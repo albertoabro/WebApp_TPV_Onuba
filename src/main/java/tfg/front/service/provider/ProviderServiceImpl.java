@@ -99,6 +99,7 @@ public class ProviderServiceImpl extends AbstractClient implements ProviderServi
             ResponseEntity<Provider> response = restTemplate.postForEntity(uri, provider, Provider.class);
             if(response.getStatusCode().is2xxSuccessful())
                 created=true;
+
         }catch (HttpClientErrorException e){
             log.error("Error: "+e);
         }
