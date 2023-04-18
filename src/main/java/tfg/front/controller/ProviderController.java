@@ -53,9 +53,8 @@ public class ProviderController {
 
     @GetMapping("/registerProvider")
     public ModelAndView registerProvider(){
-        ModelAndView modelAndView = new ModelAndView("/provider/createProvider");
 
-        return modelAndView;
+        return new ModelAndView("/provider/createProvider");
     }
 
     @GetMapping("/editProvider")
@@ -80,7 +79,7 @@ public class ProviderController {
         ModelAndView modelAndView = new ModelAndView("/provider/providers");
 
         if(!searchProviders.isEmpty())
-            modelAndView.addObject("providers",providers);
+            modelAndView.addObject("providers",searchProviders);
 
         return modelAndView;
     }
@@ -98,7 +97,6 @@ public class ProviderController {
         this. products = products;
 
         Provider provider = new Provider(id,nameProvider,address,phone,products);
-
 
         if(providerService.createProvider(provider))
             providers.add(provider);
@@ -119,7 +117,8 @@ public class ProviderController {
         if(providerService.updateProvider(provider))
         {
             int pos = providerService.searchPosition(providers, id);
-            providers.set(pos,provider);
+            if(pos!=-1)
+                providers.set(pos,provider);
         }
 
         response.sendRedirect("/providers/providers");

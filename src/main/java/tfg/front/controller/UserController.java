@@ -159,7 +159,8 @@ public class UserController {
         User user = new User(id,userName,password,address,phone,typeUser);
         if(userService.updateEmployee(user)){
             int pos = userService.searchPosition(employees, id);
-            employees.set(pos, user);
+            if(pos!=-1)
+                employees.set(pos, user);
         }
 
         response.sendRedirect("/users/employees");

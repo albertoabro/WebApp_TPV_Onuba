@@ -73,7 +73,6 @@ public class ProductServiceImpl extends AbstractClient implements ProductService
         boolean found = false;
         int counter = 0, pos=-1;
 
-
         while (counter<products.size() && !found)
         {
             if(products.get(counter).getIdProduct() == id)
@@ -109,7 +108,7 @@ public class ProductServiceImpl extends AbstractClient implements ProductService
                 created=true;
 
         }catch (HttpClientErrorException e){
-            log.error("Error: "+ e.toString());
+            log.error("Error: "+ e);
         }
         return created;
     }
@@ -126,7 +125,7 @@ public class ProductServiceImpl extends AbstractClient implements ProductService
                 updated=true;
 
         }catch (HttpClientErrorException e){
-            log.error("Error: "+e.toString());
+            log.error("Error: "+e);
         }
         return updated;
     }

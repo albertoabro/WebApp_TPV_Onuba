@@ -11,7 +11,6 @@ public interface ProductService {
     Product searchProductById(List<Product> products, int id);
     int searchPosition(List<Product>products, int id);
     List<Product> searchProductByName(String nameProduct) throws JsonProcessingException;
-
     boolean createProduct(Product product);
     boolean updateProduct(Product product);
 }

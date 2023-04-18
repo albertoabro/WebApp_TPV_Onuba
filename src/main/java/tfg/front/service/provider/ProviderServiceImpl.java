@@ -84,7 +84,7 @@ public class ProviderServiceImpl extends AbstractClient implements ProviderServi
     @Override
     public List<Provider> searchProviderByName(String name) throws JsonProcessingException {
         String searchName = name+"%";
-        String uri = baseUrl+"/search/"+searchName;
+        String uri = baseUrl+"/providers/search/"+searchName;
 
         ResponseEntity<List> response = restTemplate.exchange(uri, HttpMethod.GET, null, List.class);
 
