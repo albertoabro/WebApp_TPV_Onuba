@@ -96,6 +96,7 @@ public class FamilyController {
             this.id=families.get(families.size()-1).getIdFamily()+1;
         this.nameFamily = nameFamily;
 
+        log.info("ID: "+id);
         Family family = new Family(id, nameFamily);
 
         if(familyService.createFamily(family))

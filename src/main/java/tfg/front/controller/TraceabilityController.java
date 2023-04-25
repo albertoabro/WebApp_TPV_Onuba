@@ -42,7 +42,7 @@ public class TraceabilityController {
         if(traceabilities.isEmpty())
             traceabilities=traceabilityService.getTraceabilities();
 
-        ModelAndView modelAndView = new ModelAndView("/traceability/traceabilities");
+        ModelAndView modelAndView = new ModelAndView("/production/traceabilities");
         modelAndView.addObject("traceabilities",traceabilities);
 
         return modelAndView;
@@ -60,7 +60,7 @@ public class TraceabilityController {
         articles = articleService.getArticles();
         products = productService.getProducts();
 
-        ModelAndView modelAndView = new ModelAndView("/traceability/createTraceability");
+        ModelAndView modelAndView = new ModelAndView("/production/createTraceability");
         modelAndView.addObject("articles",articles);
         modelAndView.addObject("products",products);
 

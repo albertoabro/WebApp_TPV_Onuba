@@ -9,7 +9,7 @@
 </head>
 <body>
 <section> <div th:insert="~{menu}"></div></section>
-<section> <div th:insert="~{article/menuArticle}"></div></section>
+<section> <div th:insert="~{product/menuProduct}"></div></section>
 <div class="container mt-4">
     <div class="row">
         <div class="col-sm-8">
@@ -17,21 +17,20 @@
                 <thead>
                 <tr>
                     <th>NOMBRE</th>
+                    <th>PROVEEDOR</th>
+                    <th>CATEGORÍA</th>
                     <th>PRECIO</th>
-                    <th>FAMILIA</th>
-                    <th>NÚMERO DE LOTE</th>
                     <th>ACCIÓN</th>
                 </tr>
                 </thead>
                 <tbody>
 
-                <tr th:each="article:${article}">
-                    <td th:text="${article.nameSales}"></td>
-                    <td th:text="${article.priceSales}"></td>
-                    <td th:text="${article.address}"></td>
-                    <td th:text="${article.numBatch}"></td>
-                    <td th:each="family:${families}" th:if="${family.idFamily == article.idFamily}" th:text="${family.nameFamily}"></td>
-                    <td> <a th:href="@{/articles/editArticle(id=${article.idArticle})}"> Editar</a></td>
+                <tr th:each="product:${product}">
+                    <td th:text="${product.nameProduct}"></td>
+                    <td th:each="provider:${providers}" th:if="${provider.idProvider == product.idProvider}" th:text="${provider.nameProvider}"></td>
+                    <td th:text="${product.price}"></td>
+                    <td th:text="${product.category}"></td>
+                    <td> <a th:href="@{/products/editProduct(id=${product.idProduct})}"> Editar</a></td>
                 </tr>
 
                 </tbody>

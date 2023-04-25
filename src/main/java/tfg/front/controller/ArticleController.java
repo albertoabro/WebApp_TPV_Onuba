@@ -101,7 +101,7 @@ public class ArticleController {
     }
 
     @PostMapping("/createArticle")
-    public void createArticle(HttpServletResponse response, @RequestParam String nameArticle, @RequestParam double price, @RequestParam int unit, @RequestParam int idFamily, @RequestParam int numBatch) throws IOException{
+    public void createArticle(HttpServletResponse response, @RequestParam String nameArticle, @RequestParam double price, @RequestParam int idFamily, @RequestParam int numBatch) throws IOException{
         if(articles.isEmpty())
             this.id = 1;
         else
@@ -109,7 +109,7 @@ public class ArticleController {
 
         this.nameArticle = nameArticle;
         this.price = price;
-        this.unit = unit;
+        this.unit = 0;
         this.idFamily = idFamily;
         this.numBatch = numBatch;
 

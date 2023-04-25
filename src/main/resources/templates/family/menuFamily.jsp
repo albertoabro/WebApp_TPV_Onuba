@@ -11,7 +11,7 @@
 <div th:fragment="~{family/menuFamily}">
     <nav class="navbar navbar-light bg-light md">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/family/employees">Empleados</a>
+            <a class="navbar-brand" href="/families/families">Familias</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -23,10 +23,10 @@
                 <div class="offcanvas-body">
                     <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="/users/registerEmployee"> Nuevo Empleado</a>
+                            <a class="nav-link active" aria-current="page" href="/families/registerFamily"> Nueva Familia</a>
                         </li>
-                        <form class="d-flex" method="get" action="/users/searchEmployee">
-                            <input class="form-control me-2" name="userName" type="search" placeholder="Buscar por nombre Usuario" aria-label="Search">
+                        <form class="d-flex" method="get" action="/families/searchFamily">
+                            <input class="form-control me-2" name="nameFamily" type="search" placeholder="Buscar por nombre de Familia" aria-label="Search">
                             <button class="btn btn-outline-success" type="submit">Buscar</button>
                         </form>
                     </ul>

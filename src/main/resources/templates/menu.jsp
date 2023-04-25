@@ -29,19 +29,19 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link active" href="/article">Artículos</a>
+                            <a class="nav-link active" href="/articles/articles">Artículos</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link active" href="/production">Produción</a>
+                            <a class="nav-link active" href="/traceabilities/traceabilities">Produción</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link active" href="/family">Familias</a>
+                            <a class="nav-link active" href="/families/families">Familias</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link active" href="#">Productos</a>
+                            <a class="nav-link active" href="/products/products">Productos</a>
                         </li>
 
                         <li class="nav-item">
