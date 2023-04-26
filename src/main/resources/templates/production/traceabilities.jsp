@@ -19,11 +19,11 @@
                 <div class="card-header text-center">
                     <label class="fw-bold mt-2 text-end" th:text="${traceability.numberBatch}"></label>
                     <div class="card-body text-center">
-                        <a class="noUnderlined" th:href="@{/traceabilities/tracebility(id=${tracebility.idTraceability})}">Datos</a>
+                        <a class="noUnderlined" th:href="@{/traceabilities/tracebility(id=${traceability.idTraceability})}">Datos</a>
                     </div>
                 </div>
                 <div class="card-footer">
-                    <a class="noUnderlined" th:href="@{/traceabilities/editTracebility(id=${tracebility.idTraceability})}">Editar</a>
+                    <a class="noUnderlined" th:href="@{/traceabilities/editTracebility(id=${traceability.idTraceability})}">Editar</a>
                 </div>
             </div>
         </div>

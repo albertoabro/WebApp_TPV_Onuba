@@ -32,6 +32,7 @@ public class ProviderController {
             providers=providerService.getProviders();
         ModelAndView modelAndView = new ModelAndView("/provider/providers");
         modelAndView.addObject("providers", providers);
+        log.info("Provedores: " + providers.toString());
         return modelAndView;
     }
 

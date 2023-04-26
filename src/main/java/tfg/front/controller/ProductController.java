@@ -69,7 +69,7 @@ public class ProductController {
     @GetMapping("/registerProduct")
     public ModelAndView registerProduct() throws JsonProcessingException {
         providers = providerService.getProviders();
-
+        log.info("Register: "+providers.toString());
         ModelAndView modelAndView = new ModelAndView("/product/createProduct");
         modelAndView.addObject("providers",providers);
 
@@ -119,6 +119,7 @@ public class ProductController {
         this.price = price;
 
         Product product = new Product(id,nameProduct, idProvider,category,price);
+        log.info("Producto: "+product);
         if(productService.createProduct(product))
             products.add(product);
 
