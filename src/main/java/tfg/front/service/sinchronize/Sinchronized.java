@@ -23,8 +23,11 @@ public class Sinchronized {
         this.sqlCommands = sqlCommands;
     }
 
-    public boolean createFile(List<String> sqlCommands){
+    public boolean createFile(List<String> sqlCommands, int equipo){
         boolean created = false;
+
+        File dataBase;
+
         return created;
     }
 
