@@ -38,6 +38,13 @@
             <div class="invalid-feedback" data-sb-feedback="price:required">Price is required.</div>
 
         </div>
+
+        <div class="form-floating mb-3">
+            <input class="form-control" name="stock" id="stock" type="text" placeholder="price" data-sb-validations="required" />
+            <label for="price">Stock</label>
+            <div class="invalid-feedback" data-sb-feedback="price:required">Stock is required.</div>
+        </div>
+
         <div class="d-none" id="submitErrorMessage">
             <div class="text-center text-danger mb-3">Error sending message!</div>
         </div>

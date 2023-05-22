@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/articles")
 public class ArticleController {
-    int id, idFamily, unit, numBatch;
+    int id, idFamily, unit, numBatch, stock;
     String nameArticle;
     double price;
     private List<Article> articles  = new ArrayList<>();
@@ -34,8 +34,7 @@ public class ArticleController {
 
     @GetMapping("/articles")
     public ModelAndView getArticles() throws JsonProcessingException{
-        if(articles.isEmpty())
-            articles=articleService.getArticles();
+        articles=articleService.getArticles();
 
         ModelAndView modelAndView = new ModelAndView("/article/articles");
         modelAndView.addObject("articles", articles);
@@ -101,7 +100,7 @@ public class ArticleController {
     }
 
     @PostMapping("/createArticle")
-    public void createArticle(HttpServletResponse response, @RequestParam String nameArticle, @RequestParam double price, @RequestParam int idFamily, @RequestParam int numBatch) throws IOException{
+    public void createArticle(HttpServletResponse response, @RequestParam String nameArticle, @RequestParam double price, @RequestParam int idFamily, @RequestParam int numBatch, @RequestParam int stock) throws IOException{
         if(articles.isEmpty())
             this.id = 1;
         else
@@ -112,8 +111,9 @@ public class ArticleController {
         this.unit = 0;
         this.idFamily = idFamily;
         this.numBatch = numBatch;
+        this.stock = stock;
 
-        Article article = new Article(id, nameArticle, price, unit, idFamily, numBatch);
+        Article article = new Article(id, nameArticle, price, unit, idFamily, numBatch, stock);
         if(articleService.createArticle(article))
             articles.add(article);
 
@@ -121,15 +121,16 @@ public class ArticleController {
     }
 
     @PutMapping("/editArticle")
-    public void updateArticle(HttpServletResponse response, @RequestParam int id, @RequestParam String nameArticle, @RequestParam double price, @RequestParam int unit, @RequestParam int idFamily, @RequestParam int numBatch) throws IOException{
+    public void updateArticle(HttpServletResponse response, @RequestParam int id, @RequestParam String nameArticle, @RequestParam double price, @RequestParam int unit, @RequestParam int idFamily, @RequestParam int numBatch, @RequestParam int stock) throws IOException{
         this.id = id;
         this.nameArticle = nameArticle;
         this.price = price;
         this.unit = unit;
         this.idFamily = idFamily;
         this.numBatch = numBatch;
+        this.stock = stock;
 
-        Article article = new Article(id, nameArticle, price, unit, idFamily, numBatch);
+        Article article = new Article(id, nameArticle, price, unit, idFamily, numBatch,stock);
         if(articleService.updateArticle(article)){
             int pos = articleService.searchPosition(articles, id);
             if(pos!=-1)

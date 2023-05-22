@@ -12,9 +12,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import tfg.front.Synchronized;
 import tfg.front.domain.Family;
 import tfg.front.service.AbstractClient;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +25,8 @@ import java.util.List;
 @Service
 public class FamilyServiceImpl extends AbstractClient implements FamilyService {
     @Autowired
-    protected FamilyServiceImpl(RestTemplate restTemplate) {
-        super(restTemplate);
+    protected FamilyServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized) throws IOException {
+        super(restTemplate, aSynchronized);
     }
 
     private List<Family> getFamilies(ResponseEntity<List> response) throws JsonProcessingException{
@@ -105,8 +107,11 @@ public class FamilyServiceImpl extends AbstractClient implements FamilyService {
 
         try {
             ResponseEntity<Family> response = restTemplate.postForEntity(uri,family, Family.class);
-            if(response.getStatusCode().is2xxSuccessful())
-                created=true;
+            if(response.getStatusCode().is2xxSuccessful()) {
+                created = true;
+                String sql ="Insert into family values(\'"+family.getIdFamily()+"\', \'"+family.getNameFamily()+"\')";
+                aSynchronized.sqlCommands.add(sql);
+            }
 
         }catch (HttpClientErrorException e)
         {
@@ -125,8 +130,11 @@ public class FamilyServiceImpl extends AbstractClient implements FamilyService {
 
         try {
             ResponseEntity<Family> response = restTemplate.exchange(uri, HttpMethod.PUT, entity, Family.class);
-            if(response.getStatusCode().is2xxSuccessful())
-                updated=true;
+            if(response.getStatusCode().is2xxSuccessful()) {
+                updated = true;
+                String sql = "Update article set nameFamily=\'"+family.getNameFamily()+"\' where idFamily="+family.getIdFamily();
+                aSynchronized.sqlCommands.add(sql);
+            }
 
         }catch (HttpClientErrorException e)
         {

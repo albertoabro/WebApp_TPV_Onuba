@@ -12,9 +12,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import tfg.front.Synchronized;
 import tfg.front.domain.Provider;
 import tfg.front.service.AbstractClient;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +25,7 @@ import java.util.List;
 @Service
 public class ProviderServiceImpl extends AbstractClient implements ProviderService{
     @Autowired
-    public ProviderServiceImpl(RestTemplate restTemplate){super(restTemplate);}
+    public ProviderServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized) throws IOException {super(restTemplate, aSynchronized);}
     private List<Provider> getProviders(ResponseEntity<List> response) throws JsonProcessingException{
         List<Provider> providers;
         ObjectMapper mapper = new ObjectMapper();
@@ -97,8 +99,13 @@ public class ProviderServiceImpl extends AbstractClient implements ProviderServi
 
         try {
             ResponseEntity<Provider> response = restTemplate.postForEntity(uri, provider, Provider.class);
-            if(response.getStatusCode().is2xxSuccessful())
-                created=true;
+            if(response.getStatusCode().is2xxSuccessful()) {
+                created = true;
+
+                String sql = "Insert into providers values(\'"+provider.getIdProvider()+"\', \'"+provider.getNameProvider()+"\', \'"+provider.getAddress()+"\', " +
+                        "\'"+provider.getPhone()+"\' ,\'"+provider.getProducts()+"\' )";
+                aSynchronized.sqlCommands.add(sql);
+            }
 
         }catch (HttpClientErrorException e){
             log.error("Error: "+e);
@@ -114,8 +121,13 @@ public class ProviderServiceImpl extends AbstractClient implements ProviderServi
         HttpEntity<Provider> entity = new HttpEntity<>(provider);
         try {
             ResponseEntity<Provider> response = restTemplate.exchange(uri, HttpMethod.PUT, entity, Provider.class);
-            if(response.getStatusCode().is2xxSuccessful())
-                updated=true;
+            if(response.getStatusCode().is2xxSuccessful()) {
+                updated = true;
+
+                String sql = "Update providers set nameProvider=\'"+provider.getNameProvider()+"\', address=\'"+provider.getAddress()+"\', phone" +
+                        "\'"+provider.getPhone()+"\', productDescription=\'"+provider.getProducts()+"\'where idArticle="+provider.getIdProvider();
+                aSynchronized.sqlCommands.add(sql);
+            }
 
         }catch (HttpClientErrorException e){
             log.error("Error: "+e);

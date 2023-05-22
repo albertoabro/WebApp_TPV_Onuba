@@ -8,14 +8,16 @@ public class Article {
     int units;
     int idFamily;
     int numBatch;
+    int stock;
 
-    public Article(int idArticle, String nameSales, double priceSales, int units, int idFamily, int numBatch) {
+    public Article(int idArticle, String nameSales, double priceSales, int units, int idFamily, int numBatch, int stock) {
         this.idArticle = idArticle;
         this.nameSales = nameSales;
         this.priceSales = priceSales;
         this.units = units;
         this.idFamily = idFamily;
         this.numBatch = numBatch;
+        this.stock = stock;
     }
 
     public Article() {
@@ -69,6 +71,14 @@ public class Article {
         this.numBatch = numBatch;
     }
 
+    public int getStock() {
+        return stock;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
+
     @Override
     public String toString() {
         return "Article{" +
@@ -78,6 +88,7 @@ public class Article {
                 ", units=" + units +
                 ", idFamily=" + idFamily +
                 ", numBatch=" + numBatch +
+                ", stock=" + stock +
                 '}';
     }
 }

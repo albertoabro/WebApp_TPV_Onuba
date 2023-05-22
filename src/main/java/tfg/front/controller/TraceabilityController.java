@@ -39,8 +39,7 @@ public class TraceabilityController {
 
     @GetMapping("/traceabilities")
     public ModelAndView getTraceabilities() throws JsonProcessingException {
-        if(traceabilities.isEmpty())
-            traceabilities=traceabilityService.getTraceabilities();
+        traceabilities=traceabilityService.getTraceabilities();
 
         ModelAndView modelAndView = new ModelAndView("/production/traceabilities");
         modelAndView.addObject("traceabilities",traceabilities);

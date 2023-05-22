@@ -11,9 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import tfg.front.Synchronized;
 import tfg.front.domain.Traceability;
 import tfg.front.service.AbstractClient;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +24,8 @@ import java.util.List;
 @Service
 public class TraceabilityServiceImpl extends AbstractClient implements TraceabilityService{
     @Autowired
-    protected TraceabilityServiceImpl(RestTemplate restTemplate) {
-        super(restTemplate);
+    protected TraceabilityServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized) throws IOException {
+        super(restTemplate, aSynchronized);
     }
 
     private List<Traceability> getTraceabilities(ResponseEntity<List> response) throws JsonProcessingException{
@@ -91,8 +93,12 @@ public class TraceabilityServiceImpl extends AbstractClient implements Traceabil
 
         try{
             ResponseEntity<Traceability> response = restTemplate.postForEntity(uri, traceability, Traceability.class);
-            if(response.getStatusCode().is2xxSuccessful())
-                created=true;
+            if(response.getStatusCode().is2xxSuccessful()) {
+                created = true;
+                String sql = "Insert into traceability values(\'"+traceability.getIdTraceability()+"\', \'"+traceability.getIdArticle()+"\', \'"+traceability.getIdProduct()+"\', " +
+                        "\'"+traceability.getNumberBatch()+"\' ,\'"+traceability.getExpirationDate()+"\' )";
+                aSynchronized.sqlCommands.add(sql);
+            }
         }catch (HttpClientErrorException e){
             log.error("Error: "+e);
         }

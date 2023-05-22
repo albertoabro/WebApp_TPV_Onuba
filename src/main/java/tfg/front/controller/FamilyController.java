@@ -27,8 +27,7 @@ public class FamilyController {
 
     @GetMapping("/families")
     public ModelAndView getFamilies() throws JsonProcessingException {
-        if(families.isEmpty())
-            families=familyService.getFamilies();
+        families=familyService.getFamilies();
 
         ModelAndView modelAndView = new ModelAndView("/family/families");
         modelAndView.addObject("families", families);

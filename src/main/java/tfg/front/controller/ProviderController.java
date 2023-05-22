@@ -28,8 +28,7 @@ public class ProviderController {
 
     @GetMapping("/providers")
     public ModelAndView getProviders() throws JsonProcessingException{
-        if(providers.isEmpty())
-            providers=providerService.getProviders();
+        providers=providerService.getProviders();
         ModelAndView modelAndView = new ModelAndView("/provider/providers");
         modelAndView.addObject("providers", providers);
         log.info("Provedores: " + providers.toString());

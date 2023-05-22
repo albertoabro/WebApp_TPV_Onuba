@@ -49,11 +49,11 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link active" href="#">Ventas</a>
+                            <a class="nav-link active" href="/synchronize/tickets">Ventas</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link active" href="#">Sincronizar</a>
+                            <a class="nav-link active" href="/synchronize/terminals">Sincronizar</a>
                         </li>
                     </ul>
 

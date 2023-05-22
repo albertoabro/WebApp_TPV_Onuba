@@ -7,24 +7,24 @@ import com.google.gson.reflect.TypeToken;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import tfg.front.Synchronized;
 import tfg.front.domain.TypeUser;
 import tfg.front.service.AbstractClient;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
 @Service
 public class TypeUserServiceImpl extends AbstractClient implements TypeUserService{
     @Autowired
-    protected TypeUserServiceImpl(RestTemplate restTemplate) {super(restTemplate);}
+    protected TypeUserServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized) throws IOException {super(restTemplate, aSynchronized);}
 
     @Override
     public List<TypeUser> getTypesUsers() throws JsonProcessingException {

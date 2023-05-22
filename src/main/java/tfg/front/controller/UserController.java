@@ -61,8 +61,7 @@ public class UserController {
     }
     @GetMapping( "/employees")
     public ModelAndView getUsers() throws JsonProcessingException {
-        if(employees.isEmpty())
-            employees= userService.getUsers();
+        employees= userService.getUsers();
 
         ModelAndView modelAndView = new ModelAndView("/employee/employees");
         modelAndView.addObject("users",employees);

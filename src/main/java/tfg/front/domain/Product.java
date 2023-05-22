@@ -7,13 +7,15 @@ public class Product {
     int idProvider;
     String category;
     double price;
+    int stock;
 
-    public Product(int idProduct, String nameProduct, int idProvider, String category, double price) {
+    public Product(int idProduct, String nameProduct, int idProvider, String category, double price, int stock) {
         this.idProduct = idProduct;
         this.nameProduct = nameProduct;
         this.idProvider = idProvider;
         this.category = category;
         this.price = price;
+        this.stock = stock;
     }
 
     public Product() {
@@ -59,6 +61,14 @@ public class Product {
         this.price = price;
     }
 
+    public int getStock() {
+        return stock;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
+
     @Override
     public String toString() {
         return "Product{" +
@@ -67,6 +77,7 @@ public class Product {
                 ", idProvider=" + idProvider +
                 ", category='" + category + '\'' +
                 ", price=" + price +
+                ", stock=" + stock +
                 '}';
     }
 }

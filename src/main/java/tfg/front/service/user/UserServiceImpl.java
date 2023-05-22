@@ -13,10 +13,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import tfg.front.Synchronized;
 import tfg.front.domain.User;
 import tfg.front.service.AbstractClient;
 import tfg.front.service.user.login.LoginRequest;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +28,8 @@ import java.util.List;
 @Service
 public class UserServiceImpl extends AbstractClient implements UserService{
     @Autowired
-    public UserServiceImpl(RestTemplate restTemplate){
-        super(restTemplate);
+    public UserServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized) throws IOException {
+        super(restTemplate, aSynchronized);
     }
 
     @Override
@@ -119,10 +121,16 @@ public class UserServiceImpl extends AbstractClient implements UserService{
     public boolean createEmployee(User user) {
         boolean created = false;
         String uri = baseUrl+"/users";
+
         try {
             ResponseEntity<User> response = restTemplate.postForEntity(uri, user, User.class);
             if (response.getStatusCode().is2xxSuccessful()) {
                 created = true;
+                
+                String sql = "Insert into users values(\'"+user.getIdUser()+"\', \'"+user.getUserName()+"\', \'"+user.getPassword()+"\', " +
+                        "\'"+user.getAddress()+"\' ,\'"+user.getPhone()+"\' ,\'"+user.getTypeUser()+"\')";
+
+                aSynchronized.sqlCommands.add(sql);
             }
         }
         catch (HttpClientErrorException e) {
@@ -139,9 +147,13 @@ public class UserServiceImpl extends AbstractClient implements UserService{
         HttpEntity<User> entity = new HttpEntity<>(user);
         try {
             ResponseEntity<User> response = restTemplate.exchange(uri,HttpMethod.PUT,entity,User.class);
-            if (response.getStatusCode().is2xxSuccessful())
-                updated=true;
+            if (response.getStatusCode().is2xxSuccessful()) {
+                updated = true;
 
+                String sql = "Update users set userName= \'"+user.getUserName()+"\', password= \'"+user.getPassword()+"\', address=" +
+                        "\'"+user.getAddress()+"\', phone= \'"+user.getPhone()+"\', typeUser=\'"+user.getTypeUser()+"\' where idUser = "+user.getIdUser();
+                aSynchronized.sqlCommands.add(sql);
+            }
         }catch (HttpClientErrorException e){
             log.error("Error: "+e);
         }

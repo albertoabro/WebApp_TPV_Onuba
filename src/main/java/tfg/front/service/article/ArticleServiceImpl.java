@@ -12,9 +12,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import tfg.front.Synchronized;
 import tfg.front.domain.Article;
 import tfg.front.service.AbstractClient;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +25,8 @@ import java.util.List;
 @Service
 public class ArticleServiceImpl extends AbstractClient implements ArticleService {
     @Autowired
-    protected ArticleServiceImpl(RestTemplate restTemplate) {
-        super(restTemplate);
+    protected ArticleServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized) throws IOException {
+        super(restTemplate, aSynchronized);
     }
 
     private List<Article> getArticles(ResponseEntity<List> response) throws JsonProcessingException{
@@ -103,8 +105,13 @@ public class ArticleServiceImpl extends AbstractClient implements ArticleService
 
         try {
             ResponseEntity<Article>response = restTemplate.postForEntity(uri,article, Article.class);
-            if (response.getStatusCode().is2xxSuccessful())
-                created=true;
+            if (response.getStatusCode().is2xxSuccessful()) {
+                created = true;
+
+                String sql = "Insert into article values(\'"+article.getIdArticle()+"\', \'"+article.getNameSales()+"\', \'"+article.getPriceSales()+"\', " +
+                "\'"+article.getUnits()+"\' ,\'"+article.getIdFamily()+"\' ,\'"+article.getNumBatch()+"\',\'"+article.getStock()+"\')";
+                aSynchronized.sqlCommands.add(sql);
+            }
 
         }catch (HttpClientErrorException e){
             log.error("Error: "+e);
@@ -122,8 +129,12 @@ public class ArticleServiceImpl extends AbstractClient implements ArticleService
 
         try {
             ResponseEntity<Article>response = restTemplate.exchange(uri,HttpMethod.PUT, entity ,Article.class);
-            if (response.getStatusCode().is2xxSuccessful())
-                updated=true;
+            if (response.getStatusCode().is2xxSuccessful()) {
+                updated = true;
+                String sql = "Update article set nameSales=\'"+article.getNameSales()+"\', priceSales=\'"+article.getPriceSales()+"\', units=" +
+                        "\'"+article.getUnits()+"\', family=\'"+article.getIdFamily()+"\', numBatch=\'"+article.getNumBatch()+"\', stock=\'"+article.getStock()+"\' where idArticle="+article.getIdArticle();
+                aSynchronized.sqlCommands.add(sql);
+            }
 
         }catch (HttpClientErrorException e){
             log.error("Error: "+e);

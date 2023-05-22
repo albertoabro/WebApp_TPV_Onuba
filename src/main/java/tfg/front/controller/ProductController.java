@@ -21,7 +21,7 @@ import java.util.List;
 public class ProductController {
 
     String nameProduct, category;
-    int id, idProvider;
+    int id, idProvider, stock;
     double price;
 
     private List<Product> products = new ArrayList<>();
@@ -36,8 +36,7 @@ public class ProductController {
 
     @GetMapping("/products")
     public ModelAndView getProducts() throws JsonProcessingException{
-        if(products.isEmpty())
-            products = productService.getProducts();
+        products = productService.getProducts();
 
         ModelAndView modelAndView = new ModelAndView("/product/products");
         modelAndView.addObject("products",products);
@@ -107,7 +106,7 @@ public class ProductController {
     }
 
     @PostMapping("/addProduct")
-    public void createProduct(HttpServletResponse response, @RequestParam String nameProduct, @RequestParam int idProvider, @RequestParam String category, @RequestParam double price) throws IOException {
+    public void createProduct(HttpServletResponse response, @RequestParam String nameProduct, @RequestParam int idProvider, @RequestParam String category, @RequestParam double price, @RequestParam int stock) throws IOException {
         if(products.isEmpty())
             this.id=1;
         else
@@ -117,9 +116,10 @@ public class ProductController {
         this.idProvider=idProvider;
         this.category=category;
         this.price = price;
+        this.stock = stock;
 
-        Product product = new Product(id,nameProduct, idProvider,category,price);
-        log.info("Producto: "+product);
+        Product product = new Product(id,nameProduct, idProvider,category,price, stock);
+
         if(productService.createProduct(product))
             products.add(product);
 
@@ -127,14 +127,15 @@ public class ProductController {
     }
 
     @PutMapping("/editProduct")
-    public void updateProduct(HttpServletResponse response, @RequestParam int id, @RequestParam String nameProduct, @RequestParam int idProvider, @RequestParam String category, @RequestParam double price) throws IOException{
+    public void updateProduct(HttpServletResponse response, @RequestParam int id, @RequestParam String nameProduct, @RequestParam int idProvider, @RequestParam String category, @RequestParam double price, @RequestParam int stock) throws IOException{
         this.id=id;
         this.nameProduct=nameProduct;
         this.idProvider=idProvider;
         this.category=category;
         this.price = price;
+        this.stock = stock;
 
-        Product product = new Product(id,nameProduct, idProvider,category,price);
+        Product product = new Product(id,nameProduct, idProvider,category,price,stock);
         if(productService.updateProduct(product)){
             int pos = productService.searchPosition(products, id);
             if(pos!=-1)

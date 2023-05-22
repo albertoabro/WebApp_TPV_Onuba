@@ -12,9 +12,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import tfg.front.Synchronized;
 import tfg.front.domain.Product;
 import tfg.front.service.AbstractClient;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +25,8 @@ import java.util.List;
 @Service
 public class ProductServiceImpl extends AbstractClient implements ProductService {
     @Autowired
-    protected ProductServiceImpl(RestTemplate restTemplate) {
-        super(restTemplate);
+    protected ProductServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized) throws IOException {
+        super(restTemplate, aSynchronized);
     }
 
     private List<Product> getProducts(ResponseEntity<List>response) throws JsonProcessingException{
@@ -104,8 +106,12 @@ public class ProductServiceImpl extends AbstractClient implements ProductService
 
         try {
             ResponseEntity<Product> response = restTemplate.postForEntity(uri, product, Product.class);
-            if(response.getStatusCode().is2xxSuccessful())
-                created=true;
+            if(response.getStatusCode().is2xxSuccessful()) {
+                created = true;
+                String sql = "Insert into product values (\'"+product.getIdProduct()+"\', \'"+product.getNameProduct()+"\', \'"+product.getIdProvider()+"\', " +
+                        "\'"+product.getCategory()+"\', \'"+product.getPrice()+"\', \'"+product.getStock()+"\')";
+                aSynchronized.sqlCommands.add(sql);
+            }
 
         }catch (HttpClientErrorException e){
             log.error("Error: "+ e);
@@ -121,8 +127,12 @@ public class ProductServiceImpl extends AbstractClient implements ProductService
         HttpEntity<Product> entity = new HttpEntity<>(product);
         try {
             ResponseEntity<Product> response = restTemplate.exchange(uri, HttpMethod.PUT, entity, Product.class);
-            if(response.getStatusCode().is2xxSuccessful())
-                updated=true;
+            if(response.getStatusCode().is2xxSuccessful()) {
+                updated = true;
+                String sql = "Update product set nameProduct=\'"+product.getNameProduct()+"\', provider=\'"+product.getIdProvider()+"\', category="+
+                        "\'"+product.getCategory()+"\', price=\'"+product.getPrice()+"\', stock=\'"+product.getStock()+"\' where idProduct="+product.getIdProduct();
+                aSynchronized.sqlCommands.add(sql);
+            }
 
         }catch (HttpClientErrorException e){
             log.error("Error: "+e);
