@@ -79,10 +79,8 @@ public class TraceabilityController {
         this.expirationDate = expirationDate;
         this.numberBatch = numberBatch;
 
-        for(int i = 0; i<numIds;i++){
-            Traceability traceability = new Traceability(id,idArticle, idProducts.get(i), numberBatch, expirationDate);
-            if(traceabilityService.createTraceability(traceability))
-                traceabilities.add(traceability);
-        }
+        Traceability traceability = new Traceability(id,idArticle, numberBatch, expirationDate);
+        if(traceabilityService.createTraceability(traceability))
+            traceabilities.add(traceability);
     }
 }

@@ -18,7 +18,8 @@ import java.util.List;
 
 @Slf4j
 public class Synchronized{
-    String dir ="C:\\Users\\alber\\Desktop\\Estudios\\Universidad\\TFG\\Front\\src\\main\\java\\tfg\\front\\";
+    String dirPc ="C:\\Users\\alber\\Desktop\\Estudios\\Universidad\\TFG\\Front\\src\\main\\java\\tfg\\front\\";
+    String dirPortatil = "D:\\Alberto\\Estudios\\Universidad\\Cuarto\\TFG\\Front\\";
 
     protected static final DbxRequestConfig config = DbxRequestConfig.newBuilder("dropbox/ServerToTpv1").build();
     protected DbxClientV2 client;
@@ -40,7 +41,7 @@ public class Synchronized{
     private File createAndWrite() throws IOException {
 
         File dataBase;
-        dataBase = new File(dir+"sql.txt");
+        dataBase = new File(dirPortatil+"sql.txt");
         dataBase.createNewFile();
         BufferedWriter writer = new BufferedWriter(new FileWriter(dataBase));
 
@@ -85,7 +86,7 @@ public class Synchronized{
         boolean sync;
         try {
             String path = "/download/sales.txt";
-            OutputStream stream = new FileOutputStream(dir+"sales.txt");
+            OutputStream stream = new FileOutputStream(dirPortatil+"sales.txt");
             DownloadBuilder builder = client.files().downloadBuilder(path);
             builder.download(stream);
             client.files().deleteV2(path);
