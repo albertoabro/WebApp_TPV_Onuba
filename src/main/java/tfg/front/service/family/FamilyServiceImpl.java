@@ -10,6 +10,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import tfg.front.Synchronized;
@@ -23,6 +24,7 @@ import java.util.List;
 
 @Slf4j
 @Service
+@Transactional
 public class FamilyServiceImpl extends AbstractClient implements FamilyService {
     @Autowired
     protected FamilyServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized) throws IOException {
@@ -46,6 +48,18 @@ public class FamilyServiceImpl extends AbstractClient implements FamilyService {
         ResponseEntity<List> response = restTemplate.exchange(uri, HttpMethod.GET,null, List.class);
 
         return getFamilies(response);
+    }
+
+    @Override
+    public Family getFamilyById(int idFamily) {
+        String uri = baseUrl+"/families/"+idFamily;
+        Family family = restTemplate.getForObject(uri,Family.class);
+        return family;
+    }
+
+    @Override
+    public Family create() {
+        return new Family();
     }
 
     @Override
@@ -115,7 +129,7 @@ public class FamilyServiceImpl extends AbstractClient implements FamilyService {
 
         }catch (HttpClientErrorException e)
         {
-            log.error("Error: "+e.toString());
+            return created;
         }
 
         return created;
@@ -125,7 +139,7 @@ public class FamilyServiceImpl extends AbstractClient implements FamilyService {
     public boolean updateFamily(Family family) {
         boolean updated = false;
         String id = String.valueOf(family.getIdFamily());
-        String uri = baseUrl+"families"+id;
+        String uri = baseUrl+"/families/"+id;
         HttpEntity<Family>entity = new HttpEntity<>(family);
 
         try {
@@ -138,8 +152,19 @@ public class FamilyServiceImpl extends AbstractClient implements FamilyService {
 
         }catch (HttpClientErrorException e)
         {
-            log.error("Error: "+e.toString());
+            return updated;
         }
         return updated;
+    }
+
+    @Override
+    public void delete(Family family) {
+        String id = String.valueOf(family.getIdFamily());
+        String uri = baseUrl+"/families"+id;
+
+        HttpEntity<Family> entity = new HttpEntity<>(family);
+        restTemplate.exchange(uri,HttpMethod.DELETE,entity, Family.class);
+        String sql = "Delete from family wher idFamily="+id;
+        aSynchronized.sqlCommands.add(sql);
     }
 }

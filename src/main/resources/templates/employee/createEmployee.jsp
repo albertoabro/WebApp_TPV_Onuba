@@ -11,36 +11,38 @@
     <section> <div th:insert="~{menu}"></div></section>
     <section> <div th:insert="~{employee/menuEmployee}"></div></section>
 
-    <div class="container px-5 my-5">
-        <form method="POST" action="/users/addEmployee">
+           <form action="/users/addEmployee" th:object="${user}" method="post" class="form">
             <div class="form-floating mb-3">
-                <input class="form-control" name="userName" id="nombre" type="text" placeholder="Nombre" data-sb-validations="required" />
-                <label for="nombre">Nombre</label>
-                <div class="invalid-feedback" data-sb-feedback="nombre:required">Nombre is required.</div>
+                <input class="form-control" id="userName" type="text" placeholder="Nombre" th:field="*{userName}"/>
+                <label for="userName">Nombre</label>
+                <div class="alert alert-warning" th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}"></div>
             </div>
             <div class="form-floating mb-3">
-                <input class="form-control" name="password" id="contrasena" type="text" placeholder="Contraseña" data-sb-validations="required" />
-                <label for="contrasena">Contraseña</label>
-                <div class="invalid-feedback" datasena:required>Contraseña is required.</div>
+                <input class="form-control" id="password" type="text" placeholder="Contraseña" th:field="*{password} "/>
+                <label for="password">Contraseña</label>
+                <div class="alert alert-warning" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
             </div>
             <div class="form-floating mb-3">
-                <select class="form-select" name="typeUser" id="tipoEmpleado" aria-label="Tipo Empleado">
+                <select class="form-select" name="typeUser" id="typeUser" aria-label="Tipo Empleado" th:field="*{typeUser}">
                     <div th:each="typeUser:${typesUser}">
                         <option th:value="${typeUser.id}" th:text="${typeUser.denomination}"></option>
                     </div>
                 </select>
-                <label for="tipoEmpleado">Tipo Empleado</label>
+                <label for="typeUser">Tipo Empleado</label>
+                <div class="alert alert-warning" th:if="${#fields.hasErrors('typeUser')}" th:errors="*{typeUser}"></div>
             </div>
             <div class="form-floating mb-3">
-                <input class="form-control" name="address" id="direccion" type="text" placeholder="Dirección" data-sb-validations="" />
+                <input class="form-control" name="address" id="direccion" type="text" placeholder="Dirección"/>
                 <label for="direccion">Dirección</label>
             </div>
             <div class="form-floating mb-3">
-                <input class="form-control" name="phone" id="telefono" type="text" placeholder="Telefono" data-sb-validations="" />
-                <label for="telefono">Telefono</label>
+                <input class="form-control" name="phone" id="telefono" type="text" placeholder="Telefono"/>
+                <label for="telefono">Teléfono</label>
             </div>
-            <div class="d-none" id="submitErrorMessage">
-                <div class="text-center text-danger mb-3">Error sending message!</div>
+            <div class="form-floating mb-3">
+                <input class="form-control" name="passwordTPV" id="passwordTPV" type="text" placeholder="Contraseña TPV"  th:field="*{passwordTPV}"/>
+                <label for="passwordTPV">Constraseña TPV</label>
+                <div class="alert alert-warning" th:if="${#fields.hasErrors('passwordTPV')}" th:errors="*{passwordTPV}"></div>
             </div>
             <div class="d-grid">
                 <button class="btn btn-primary btn-lg" id="submitButton" type="submit">Registrar</button>

@@ -12,15 +12,13 @@
 <section> <div th:insert="~{family/menuFamily}"></div></section>
 
 <div class="container px-5 my-5">
-    <form method="POST" action="/families/addFamily">
+    <form method="POST" action="/families/addFamily" th:object="${family}" class="form">
         <div class="form-floating mb-3">
-            <input class="form-control" name="nameFamily" id="nombre" type="text" placeholder="Nombre" data-sb-validations="required" />
-            <label for="nombre">Nombre</label>
-            <div class="invalid-feedback" data-sb-feedback="nombre:required">Nombre is required.</div>
+            <input class="form-control" id="nameFamily" type="text" placeholder="Nombre" th:field="*{nameFamily}"/>
+            <label for="nameFamily">Nombre</label>
+            <div class="alert alert-warning" th:if="${#fields.hasErrors('nameFamily')}" th:errors="*{nameFamily}"></div>
         </div>
-        <div class="d-none" id="submitErrorMessage">
-            <div class="text-center text-danger mb-3">Error sending message!</div>
-        </div>
+
         <div class="d-grid">
             <button class="btn btn-primary btn-lg" id="submitButton" type="submit">Registrar</button>
         </div>

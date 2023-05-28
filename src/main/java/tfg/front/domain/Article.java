@@ -1,27 +1,33 @@
 package tfg.front.domain;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class Article {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     int idArticle;
+
+    @NotBlank(message = "{Blank.Article.name}")
     String nameSales;
+    @NotNull(message = "{Null.Article.price}")
     double priceSales;
     int units;
-    int idFamily;
+    @NotNull(message = "{Null.Article.family}")
+    int family;
+    @NotNull(message = "{Null.Article.numberBatch}")
     int numBatch;
+    @NotNull(message = "{Null.Article.stock}")
     int stock;
 
-    public Article(int idArticle, String nameSales, double priceSales, int units, int idFamily, int numBatch, int stock) {
-        this.idArticle = idArticle;
-        this.nameSales = nameSales;
-        this.priceSales = priceSales;
-        this.units = units;
-        this.idFamily = idFamily;
-        this.numBatch = numBatch;
-        this.stock = stock;
-    }
-
-    public Article() {
-    }
+    public Article() {}
 
     public int getIdArticle() {
         return idArticle;
@@ -55,12 +61,12 @@ public class Article {
         this.units = units;
     }
 
-    public int getIdFamily() {
-        return idFamily;
+    public int getFamily() {
+        return family;
     }
 
-    public void setIdFamily(int idFamily) {
-        this.idFamily = idFamily;
+    public void setFamily(int family) {
+        this.family = family;
     }
 
     public int getNumBatch() {
@@ -86,7 +92,7 @@ public class Article {
                 ", nameSales='" + nameSales + '\'' +
                 ", priceSales=" + priceSales +
                 ", units=" + units +
-                ", idFamily=" + idFamily +
+                ", family=" + family +
                 ", numBatch=" + numBatch +
                 ", stock=" + stock +
                 '}';

@@ -4,12 +4,12 @@ package tfg.front.domain;
 import jakarta.validation.constraints.NotNull;
 
 import javax.persistence.*;
+import java.sql.Date;
 
 @Entity
-public class Traceability {
+public class TraceabilityToServer {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     int idTraceability;
     @NotNull(message = "{Null.Traceability.article}")
     int article;
@@ -18,9 +18,9 @@ public class Traceability {
     @NotNull(message = "{Null.Traceability.numberBatch}")
     int numberBatch;
     @NotNull(message = "{Null.Traceability.date}")
-    String expirationDate;
+    Date expirationDate;
 
-    public Traceability() {
+    public TraceabilityToServer() {
     }
 
     public int getIdTraceability() {
@@ -47,11 +47,11 @@ public class Traceability {
         this.numberBatch = numberBatch;
     }
 
-    public String getExpirationDate() {
+    public Date getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(String expirationDate) {
+    public void setExpirationDate(Date expirationDate) {
         this.expirationDate = expirationDate;
     }
 

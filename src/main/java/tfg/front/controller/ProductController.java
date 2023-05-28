@@ -2,14 +2,17 @@ package tfg.front.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import tfg.front.domain.Product;
 import tfg.front.domain.Provider;
+import tfg.front.domain.TraceabilityProduct;
 import tfg.front.service.product.ProductService;
 import tfg.front.service.provider.ProviderService;
+import tfg.front.service.traceabilityProduct.TraceabilityProductService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,18 +23,16 @@ import java.util.List;
 @RequestMapping("/products")
 public class ProductController {
 
-    String nameProduct, category;
-    int id, idProvider, stock;
-    double price;
-
     private List<Product> products = new ArrayList<>();
     private List<Provider> providers = new ArrayList<>();
     private final ProductService productService;
     private final ProviderService providerService;
+    private final TraceabilityProductService traceabilityProductService;
 
-    public ProductController(ProductService productService, ProviderService providerService){
+    public ProductController(ProductService productService, ProviderService providerService, TraceabilityProductService traceabilityProductService){
         this.productService=productService;
         this.providerService=providerService;
+        this.traceabilityProductService = traceabilityProductService;
     }
 
     @GetMapping("/products")
@@ -46,8 +47,8 @@ public class ProductController {
 
     @GetMapping("/product")
     public ModelAndView getProductById(HttpServletRequest request) throws JsonProcessingException{
-        id = Integer.parseInt(request.getParameter("id"));
-        Product searchProduct = productService.searchProductById(products, id);
+        int id = Integer.parseInt(request.getParameter("id"));
+        Product searchProduct = productService.getProductById(id);
         providers = providerService.getProviders();
 
         ModelAndView modelAndView;
@@ -55,43 +56,31 @@ public class ProductController {
         if(searchProduct!=null)
         {
             modelAndView = new ModelAndView("/product/product");
-            modelAndView.addObject("product", searchProduct);
+            modelAndView.addObject("products", searchProduct);
             modelAndView.addObject("providers", providers);
         }
 
         else
-            modelAndView = getProducts();
+            modelAndView=getProducts();
 
         return modelAndView;
     }
 
     @GetMapping("/registerProduct")
     public ModelAndView registerProduct() throws JsonProcessingException {
-        providers = providerService.getProviders();
-        log.info("Register: "+providers.toString());
-        ModelAndView modelAndView = new ModelAndView("/product/createProduct");
-        modelAndView.addObject("providers",providers);
+        Product product = productService.create();
 
-        return modelAndView;
+        return createEdit(product,false);
     }
+
+
 
     @GetMapping("/editProduct")
     public ModelAndView viewEditProduct(HttpServletRequest request) throws JsonProcessingException{
-        id = Integer.parseInt(request.getParameter("id"));
-        Product searchProduct = productService.searchProductById(products, id);
-        providers = providerService.getProviders();
-        ModelAndView modelAndView;
+        int id = Integer.parseInt(request.getParameter("id"));
+        Product product = productService.getProductById(id);
 
-        if(searchProduct!=null){
-            modelAndView = new ModelAndView("/product/editProduct");
-            modelAndView.addObject("product", searchProduct);
-            modelAndView.addObject("providers", providers);
-        }
-
-        else
-            modelAndView = getProducts();
-
-        return modelAndView;
+        return createEdit(product,true);
     }
 
     @GetMapping("/searchProduct")
@@ -105,43 +94,90 @@ public class ProductController {
         return modelAndView;
     }
 
+    @GetMapping("/productsTraceability")
+    public ModelAndView productsTraceability(@RequestParam List<Integer> idsProducts) throws JsonProcessingException {
+        ModelAndView modelAndView = new ModelAndView("/product/product");
+        List<Product> productList = new ArrayList<>();
+        providers = providerService.getProviders();
+
+        for(Integer id: idsProducts)
+            productList.add(productService.getProductById(id));
+
+        modelAndView.addObject("products", productList);
+        modelAndView.addObject("providers", providers);
+
+        return modelAndView;
+    }
+
+    @GetMapping("productsByProvider")
+    public ModelAndView productsByProvider(HttpServletRequest request) throws JsonProcessingException {
+        int provider = Integer.parseInt(request.getParameter("id"));
+        List<Product> productList = productService.getProductsByProvider(provider);
+        ModelAndView modelAndView = new ModelAndView("/product/products");
+
+        modelAndView.addObject("products",productList);
+
+        return modelAndView;
+    }
+
     @PostMapping("/addProduct")
-    public void createProduct(HttpServletResponse response, @RequestParam String nameProduct, @RequestParam int idProvider, @RequestParam String category, @RequestParam double price, @RequestParam int stock) throws IOException {
-        if(products.isEmpty())
-            this.id=1;
-        else
-            this.id=products.get(products.size()-1).getIdProduct()+1;
+    public ModelAndView createProduct(@Valid Product product, BindingResult result) throws IOException {
 
-        this.nameProduct=nameProduct;
-        this.idProvider=idProvider;
-        this.category=category;
-        this.price = price;
-        this.stock = stock;
-
-        Product product = new Product(id,nameProduct, idProvider,category,price, stock);
+        if(result.hasErrors())
+            return createEdit(product,false, result.toString());
 
         if(productService.createProduct(product))
             products.add(product);
 
-        response.sendRedirect("/products/products");
+       return getProducts();
     }
 
     @PutMapping("/editProduct")
-    public void updateProduct(HttpServletResponse response, @RequestParam int id, @RequestParam String nameProduct, @RequestParam int idProvider, @RequestParam String category, @RequestParam double price, @RequestParam int stock) throws IOException{
-        this.id=id;
-        this.nameProduct=nameProduct;
-        this.idProvider=idProvider;
-        this.category=category;
-        this.price = price;
-        this.stock = stock;
+    public ModelAndView updateProduct(@Valid Product product, BindingResult result) throws IOException{
 
-        Product product = new Product(id,nameProduct, idProvider,category,price,stock);
+        if(result.hasErrors())
+            return createEdit(product,true,result.toString());
+
         if(productService.updateProduct(product)){
-            int pos = productService.searchPosition(products, id);
+            int pos = productService.searchPosition(products, product.getIdProduct());
             if(pos!=-1)
                 products.set(pos, product);
         }
 
-        response.sendRedirect("/products/products");
+        return getProducts();
+    }
+
+    @DeleteMapping("/delete")
+    public ModelAndView delete(@RequestParam int idProduct) throws JsonProcessingException {
+        Product product = productService.getProductById(idProduct);
+        List<TraceabilityProduct> traceabilityProducts = traceabilityProductService.getTraceabilityProducts();
+        boolean existTraceability = productService.existTraceability(traceabilityProducts, product);
+
+        if(product==null)
+            return getProducts();
+
+        if(!existTraceability)
+            productService.delete(product);
+
+        return getProducts();
+    }
+
+    private ModelAndView createEdit(Product product, boolean edit) throws JsonProcessingException {
+        return createEdit(product,edit,null);
+    }
+    private ModelAndView createEdit(Product product, boolean edit, String message) throws JsonProcessingException {
+        ModelAndView modelAndView;
+        providers = providerService.getProviders();
+
+        if(edit)
+            modelAndView=new ModelAndView("/product/editProduct");
+        else
+            modelAndView=new ModelAndView("/product/createProduct");
+
+        modelAndView.addObject("product",product);
+        modelAndView.addObject("providers", providers);
+        modelAndView.addObject("error", message);
+
+        return modelAndView;
     }
 }

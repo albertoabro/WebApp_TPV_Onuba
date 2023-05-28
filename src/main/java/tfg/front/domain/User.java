@@ -1,27 +1,35 @@
 package tfg.front.domain;
 
-import lombok.Data;
 
-@Data
+import jakarta.validation.constraints.*;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
+
 public class User {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     int idUser;
+    @NotBlank(message = "{Blank.User.username}")
+    @Size(max = 20, message = ("Size.User.username"))
     String userName;
+    @Pattern(regexp = "^\\d{0,20}$", message ="{Pattern.User.password}")
     String password;
+    @Size(max = 200, message = "{Size.User.Address}")
     String address;
+    @Pattern(regexp = "^(\\+\\d{1,2}( )?)?((\\(\\d{1,3}\\))|\\d{1,3})[- .]?\\d{3,4}[- .]?\\d{4}$", message = "{Pattern.User.phone}")
     String phone;
+    @NotNull(message = "{Null.User.TypeUser}")
     int typeUser;
+    @Pattern(regexp = "^\\d{0,4}$", message ="{Size.User.passTPV}")
+    String passwordTPV;
 
-    public User(int idUser, String userName, String password, String address, String phone, int typeUser) {
-        this.idUser= idUser;
-        this.userName = userName;
-        this.password = password;
-        this.address = address;
-        this.phone = phone;
-        this.typeUser = typeUser;
-    }
-    public User() {
-    }
+    public User() {}
 
     public int getIdUser() {
         return idUser;
@@ -71,15 +79,24 @@ public class User {
         this.typeUser = typeUser;
     }
 
+    public String getPasswordTPV() {
+        return passwordTPV;
+    }
+
+    public void setPasswordTPV(String passwordTPV) {
+        this.passwordTPV = passwordTPV;
+    }
+
     @Override
     public String toString() {
         return "User{" +
-                "id=" + idUser +
+                "idUser=" + idUser +
                 ", userName='" + userName + '\'' +
                 ", password='" + password + '\'' +
                 ", address='" + address + '\'' +
                 ", phone='" + phone + '\'' +
                 ", typeUser=" + typeUser +
+                ", passwordTPV='" + passwordTPV + '\'' +
                 '}';
     }
 }

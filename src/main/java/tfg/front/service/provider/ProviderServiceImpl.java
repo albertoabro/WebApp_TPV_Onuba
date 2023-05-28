@@ -10,6 +10,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import tfg.front.Synchronized;
@@ -23,6 +24,7 @@ import java.util.List;
 
 @Slf4j
 @Service
+@Transactional
 public class ProviderServiceImpl extends AbstractClient implements ProviderService{
     @Autowired
     public ProviderServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized) throws IOException {super(restTemplate, aSynchronized);}
@@ -43,26 +45,18 @@ public class ProviderServiceImpl extends AbstractClient implements ProviderServi
         ResponseEntity<List> response = restTemplate.exchange(uri, HttpMethod.GET, null, List.class);
         return getProviders(response);
     }
+
     @Override
-    public Provider searchProviderById(List<Provider>providers, int id){
-        boolean found = false;
-        int counter = 0;
-        Provider searchProvider;
+    public Provider getProviderById(int id) {
+        String uri = baseUrl+"/providers/"+id;
+        Provider provider = restTemplate.getForObject(uri, Provider.class);
 
-        while (counter<providers.size() && !found)
-        {
-            if(providers.get(counter).getIdProvider()==id)
-                found=true;
-            else
-                counter++;
-        }
+        return provider;
+    }
 
-        if(found)
-            searchProvider = providers.get(counter);
-        else
-             searchProvider=null;
-
-        return searchProvider;
+    @Override
+    public Provider create(){
+        return new Provider();
     }
     @Override
     public int searchPosition(List<Provider> providers, int id){
@@ -103,12 +97,12 @@ public class ProviderServiceImpl extends AbstractClient implements ProviderServi
                 created = true;
 
                 String sql = "Insert into providers values(\'"+provider.getIdProvider()+"\', \'"+provider.getNameProvider()+"\', \'"+provider.getAddress()+"\', " +
-                        "\'"+provider.getPhone()+"\' ,\'"+provider.getProducts()+"\' )";
+                        "\'"+provider.getPhone()+"\' ,\'"+provider.getProductDescription()+"\' )";
                 aSynchronized.sqlCommands.add(sql);
             }
 
         }catch (HttpClientErrorException e){
-            log.error("Error: "+e);
+        	return created;
         }
 
         return created;
@@ -125,13 +119,24 @@ public class ProviderServiceImpl extends AbstractClient implements ProviderServi
                 updated = true;
 
                 String sql = "Update providers set nameProvider=\'"+provider.getNameProvider()+"\', address=\'"+provider.getAddress()+"\', phone" +
-                        "\'"+provider.getPhone()+"\', productDescription=\'"+provider.getProducts()+"\'where idArticle="+provider.getIdProvider();
+                        "\'"+provider.getPhone()+"\', productDescription=\'"+provider.getProductDescription()+"\'where idArticle="+provider.getIdProvider();
                 aSynchronized.sqlCommands.add(sql);
             }
 
         }catch (HttpClientErrorException e){
-            log.error("Error: "+e);
+            return updated;
         }
         return updated;
+    }
+
+    @Override
+    public void delete(Provider provider) {
+        String id = String.valueOf(provider.getIdProvider());
+        String uri = baseUrl+"/providers/"+id;
+
+        HttpEntity<Provider> entity = new HttpEntity<>(provider);
+        restTemplate.exchange(uri,HttpMethod.DELETE,entity,Provider.class);
+        String sql = "Delete from providers where idProvider="+id;
+        aSynchronized.sqlCommands.add(sql);
     }
 }

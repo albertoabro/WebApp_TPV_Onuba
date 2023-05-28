@@ -2,14 +2,17 @@ package tfg.front.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import tfg.front.domain.Article;
 import tfg.front.domain.Family;
+import tfg.front.domain.Traceability;
 import tfg.front.service.article.ArticleService;
 import tfg.front.service.family.FamilyService;
+import tfg.front.service.traceability.TraceabilityService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,17 +22,16 @@ import java.util.List;
 @RestController
 @RequestMapping("/articles")
 public class ArticleController {
-    int id, idFamily, unit, numBatch, stock;
-    String nameArticle;
-    double price;
     private List<Article> articles  = new ArrayList<>();
     private List<Family> families = new ArrayList<>();
     private final ArticleService articleService;
     private final FamilyService familyService;
+    private final TraceabilityService traceabilityService;
 
-    public ArticleController(ArticleService articleService, FamilyService familyService) {
+    public ArticleController(ArticleService articleService, FamilyService familyService, TraceabilityService traceabilityService) {
         this.articleService = articleService;
         this.familyService = familyService;
+        this.traceabilityService = traceabilityService;
     }
 
     @GetMapping("/articles")
@@ -44,8 +46,8 @@ public class ArticleController {
 
     @GetMapping("/article")
     public ModelAndView getArticleById(HttpServletRequest request) throws JsonProcessingException{
-        id = Integer.parseInt(request.getParameter("id"));
-        Article searchArticle = articleService.searchProviderById(articles,id);
+        int id = Integer.parseInt(request.getParameter("id"));
+        Article searchArticle = articleService.getArticleById(id);
         families = familyService.getFamilies();
 
         ModelAndView modelAndView;
@@ -57,35 +59,24 @@ public class ArticleController {
         }
 
         else
-            modelAndView = new ModelAndView();
+            modelAndView = getArticles();
 
         return modelAndView;
     }
 
     @GetMapping("/registerArticle")
     public ModelAndView registerArticle() throws JsonProcessingException{
-        families = familyService.getFamilies();
-        ModelAndView modelAndView = new ModelAndView("/article/createArticle");
-        modelAndView.addObject("families",families);
-        return modelAndView;
+        Article article = articleService.create();
+
+        return createEdit(article,false);
     }
 
     @GetMapping("/editArticle")
     public ModelAndView viewEditArticle(HttpServletRequest request) throws JsonProcessingException{
-        id = Integer.parseInt(request.getParameter("id"));
-        Article searchArticle = articleService.searchProviderById(articles, id);
-        families = familyService.getFamilies();
-        ModelAndView modelAndView;
+        int id = Integer.parseInt(request.getParameter("id"));
+        Article article = articleService.getArticleById(id);
 
-        if(searchArticle!=null){
-            modelAndView = new ModelAndView("/article/editArticle");
-            modelAndView.addObject("article",searchArticle);
-            modelAndView.addObject("families",families);
-        }
-
-        else modelAndView = getArticles();
-
-        return modelAndView;
+        return createEdit(article,true);
     }
 
     @GetMapping("/searchArticle")
@@ -99,44 +90,87 @@ public class ArticleController {
         return modelAndView;
     }
 
-    @PostMapping("/createArticle")
-    public void createArticle(HttpServletResponse response, @RequestParam String nameArticle, @RequestParam double price, @RequestParam int idFamily, @RequestParam int numBatch, @RequestParam int stock) throws IOException{
-        if(articles.isEmpty())
-            this.id = 1;
-        else
-            this.id = articles.get(articles.size()-1).getIdArticle()+1;
+    @GetMapping("/articlesByFamily")
+    public ModelAndView articlesByFamily(HttpServletRequest request) throws JsonProcessingException {
+        int idFamily = Integer.parseInt(request.getParameter("id"));
+        List<Article> articleList = articleService.getArticlesByFamily(idFamily);
+        ModelAndView modelAndView = new ModelAndView("/article/articles");
+        modelAndView.addObject("articles", articleList);
 
-        this.nameArticle = nameArticle;
-        this.price = price;
-        this.unit = 0;
-        this.idFamily = idFamily;
-        this.numBatch = numBatch;
-        this.stock = stock;
+        return modelAndView;
+    }
 
-        Article article = new Article(id, nameArticle, price, unit, idFamily, numBatch, stock);
+    @PostMapping("/addArticle")
+    public ModelAndView createArticle(@Valid Article article, BindingResult result) throws IOException{
+
+        if(result.hasErrors())
+            return createEdit(article,false,result.toString());
+
         if(articleService.createArticle(article))
             articles.add(article);
 
-        response.sendRedirect("/articles/articles");
+        return getArticles();
     }
 
     @PutMapping("/editArticle")
-    public void updateArticle(HttpServletResponse response, @RequestParam int id, @RequestParam String nameArticle, @RequestParam double price, @RequestParam int unit, @RequestParam int idFamily, @RequestParam int numBatch, @RequestParam int stock) throws IOException{
-        this.id = id;
-        this.nameArticle = nameArticle;
-        this.price = price;
-        this.unit = unit;
-        this.idFamily = idFamily;
-        this.numBatch = numBatch;
-        this.stock = stock;
+    public ModelAndView updateArticle(@Valid Article article, BindingResult result) throws IOException{
 
-        Article article = new Article(id, nameArticle, price, unit, idFamily, numBatch,stock);
+        if(result.hasErrors())
+            return createEdit(article,true,result.toString());
+
         if(articleService.updateArticle(article)){
-            int pos = articleService.searchPosition(articles, id);
+            int pos = articleService.searchPosition(articles, article.getIdArticle());
             if(pos!=-1)
                 articles.set(pos, article);
         }
 
-        response.sendRedirect("/articles/articles");
+        return getArticles();
     }
+
+    @DeleteMapping("/delete")
+    public ModelAndView delete(@RequestParam int idArticle) throws JsonProcessingException {
+        Article article = articleService.getArticleById(idArticle);
+        String msg = "Error: El artículo no existe";
+
+        if(article==null)
+            return getArticles();
+
+        List<Traceability> traceabilities = traceabilityService.getTraceabilities();
+        boolean existTraceability = false;
+        int i=0;
+
+
+        while(i<traceabilities.size() && !existTraceability) {
+            if (traceabilities.get(i).getArticle() == article.getIdArticle())
+                existTraceability = true;
+            else
+                i++;
+        }
+
+        if(!existTraceability)
+            articleService.delete(article);
+
+        return getArticles();
+    }
+
+    private ModelAndView createEdit(Article article, boolean edit) throws JsonProcessingException {
+        return createEdit(article,edit, null);
+    }
+    private ModelAndView createEdit(Article article, boolean edit, String message) throws JsonProcessingException {
+        families = familyService.getFamilies();
+
+        ModelAndView modelAndView;
+
+        if(edit)
+            modelAndView=new ModelAndView("/article/editArticle");
+        else {
+           
+            modelAndView = new ModelAndView("/article/createArticle");
+        }
+        modelAndView.addObject("families",families);
+        modelAndView.addObject("article",article);
+
+        return modelAndView;
+    }
+
 }

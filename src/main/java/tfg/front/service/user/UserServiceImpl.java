@@ -11,6 +11,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import tfg.front.Synchronized;
@@ -26,6 +28,7 @@ import java.util.List;
 
 @Slf4j
 @Service
+@Transactional
 public class UserServiceImpl extends AbstractClient implements UserService{
     @Autowired
     public UserServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized) throws IOException {
@@ -57,6 +60,12 @@ public class UserServiceImpl extends AbstractClient implements UserService{
         return getUsers(response);
     }
 
+    @Override
+    public User create() {
+        User user = new User();
+        return user;
+    }
+
     private List<User> getUsers(ResponseEntity<List> response) throws JsonProcessingException {
         List<User>users;
         ObjectMapper mapper = new ObjectMapper();
@@ -67,26 +76,14 @@ public class UserServiceImpl extends AbstractClient implements UserService{
 
         return users;
     }
-
     @Override
-    public User searchEmployeeById(List<User> employees,int id) {
-        boolean found = false;
-        int counter=0;
-        User searchEmployee;
+    public User getEmployeeById(int id) {
+        Assert.notNull(id,"El Id no puede ser nulo");
+        String uri = baseUrl+"/users/"+id;
 
-        while (counter<employees.size() && !found){
-            if(employees.get(counter).getIdUser()==id)
-                found=true;
+        User user = restTemplate.getForObject(uri, User.class);
 
-            else
-                counter++;
-        }
-        if(found)
-            searchEmployee=employees.get(counter);
-        else
-            searchEmployee=null;
-
-        return searchEmployee;
+        return user;
     }
 
     @Override
@@ -128,13 +125,13 @@ public class UserServiceImpl extends AbstractClient implements UserService{
                 created = true;
                 
                 String sql = "Insert into users values(\'"+user.getIdUser()+"\', \'"+user.getUserName()+"\', \'"+user.getPassword()+"\', " +
-                        "\'"+user.getAddress()+"\' ,\'"+user.getPhone()+"\' ,\'"+user.getTypeUser()+"\')";
+                        "\'"+user.getAddress()+"\' ,\'"+user.getPhone()+"\' ,\'"+user.getTypeUser()+"\', \'"+user.getPasswordTPV()+"\')";
 
                 aSynchronized.sqlCommands.add(sql);
             }
         }
         catch (HttpClientErrorException e) {
-            log.error("Error: "+e);
+            return created;
         }
         return created;
     }
@@ -151,13 +148,25 @@ public class UserServiceImpl extends AbstractClient implements UserService{
                 updated = true;
 
                 String sql = "Update users set userName= \'"+user.getUserName()+"\', password= \'"+user.getPassword()+"\', address=" +
-                        "\'"+user.getAddress()+"\', phone= \'"+user.getPhone()+"\', typeUser=\'"+user.getTypeUser()+"\' where idUser = "+user.getIdUser();
+                        "\'"+user.getAddress()+"\', phone= \'"+user.getPhone()+"\', typeUser=\'"+user.getTypeUser()+"\', passwordTPV=\'"+user.getPasswordTPV()+"\' where idUser = "+user.getIdUser();
                 aSynchronized.sqlCommands.add(sql);
             }
         }catch (HttpClientErrorException e){
-            log.error("Error: "+e);
+            return updated;
         }
 
         return updated;
+    }
+
+    @Override
+    public void delete(User user) {
+        String id = String.valueOf(user.getIdUser());
+        String uri = baseUrl+"/users/"+id;
+
+        HttpEntity<User> entity = new HttpEntity<>(user);
+        restTemplate.exchange(uri, HttpMethod.DELETE,entity,User.class);
+
+        String sql = "Delete from users where idUser="+id;
+        aSynchronized.sqlCommands.add(sql);
     }
 }

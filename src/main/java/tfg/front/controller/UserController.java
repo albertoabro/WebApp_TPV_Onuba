@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import tfg.front.domain.TypeUser;
@@ -22,9 +24,6 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/users")
 public class UserController {
-
-    String userName, password, address, phone;
-    int id, idTypeUser;
     private List<User> employees = new ArrayList<>();
     private List<TypeUser> typesUser = new ArrayList<>();
     private final UserService userService;
@@ -37,11 +36,9 @@ public class UserController {
 
     @PostMapping("/login")
     public void login(HttpSession session, HttpServletResponse response, @RequestParam String userName, @RequestParam String password) throws IOException {
-        this.userName = userName;
-        this.password = password;
         LoginRequest req = new LoginRequest(userName, password);
         User user = this.userService.login(req);
-        if(user!=null) {
+        if(user.getTypeUser()==1) {
             session.setAttribute("user", user);
             response.sendRedirect("/index");
         }
@@ -70,16 +67,17 @@ public class UserController {
 
     @GetMapping("/employee")
     public ModelAndView getUserById(HttpServletRequest request) throws JsonProcessingException {
-        id = Integer.parseInt(request.getParameter("id"));
-        User searchEmployee = userService.searchEmployeeById(employees, id);
+        int id = Integer.parseInt(request.getParameter("id"));
+        User user = userService.getEmployeeById(id);
+
         if(typesUser.isEmpty())
             typesUser = typeUserService.getTypesUsers();
 
         ModelAndView modelAndView;
 
-        if(searchEmployee!=null){
+        if(user!=null){
             modelAndView = new ModelAndView("/employee/employee");
-            modelAndView.addObject("user",searchEmployee);
+            modelAndView.addObject("user",user);
             modelAndView.addObject("typeUser", typesUser);
         }
         else
@@ -90,79 +88,18 @@ public class UserController {
 
     @GetMapping("/registerEmployee")
     public ModelAndView registerEmployee() throws JsonProcessingException {
-        if(typesUser.isEmpty())
-            typesUser = typeUserService.getTypesUsers();
-
-        ModelAndView modelAndView = new ModelAndView("/employee/createEmployee");
-        modelAndView.addObject("typesUser",typesUser);
+        final User user = userService.create();
+        ModelAndView modelAndView = createEdit(user, false);
 
         return modelAndView;
-    }
-
-    @PostMapping("/addEmployee")
-    public void createEmployee(HttpSession session, HttpServletResponse response, @RequestParam String userName, @RequestParam String password, @RequestParam int typeUser, @RequestParam String address, @RequestParam String phone) throws IOException {
-        if(employees.isEmpty())
-            this.id =1;
-        else
-            this.id = employees.get(employees.size()-1).getIdUser()+1;
-
-        this.userName=userName;
-        this.password=password;
-        this.idTypeUser=typeUser;
-        this.address=address;
-        this.phone=phone;
-        String msg;
-        User user = new User(id,userName,password,address,phone,typeUser);
-        if(userService.createEmployee(user)){
-            employees.add(user);
-            msg = "Empleado creado con éxito";
-        }
-
-        else
-        {
-            msg = "Error al crear el empleado";
-        }
-
-        session.setAttribute("msg",msg);
-        response.sendRedirect("/users/employees");
     }
 
     @GetMapping("/editEmployee")
     public ModelAndView viewEditEmployee(HttpServletRequest request) throws JsonProcessingException {
-        id = Integer.parseInt(request.getParameter("id"));
-        User searchEmployee = userService.searchEmployeeById(employees, id);
-        if(typesUser.isEmpty())
-            typesUser = typeUserService.getTypesUsers();
+        int idUser = Integer.parseInt(request.getParameter("id"));
+        User user = userService.getEmployeeById(idUser);
 
-        ModelAndView modelAndView;
-
-        if(searchEmployee!=null){
-            modelAndView = new ModelAndView("/employee/editEmployee");
-            modelAndView.addObject("user",searchEmployee);
-            modelAndView.addObject("typesUser",typesUser);
-        }
-        else
-            modelAndView=getUsers();
-
-        return modelAndView;
-    }
-    @PutMapping("/editEmployee")
-    public void editEmployee(HttpServletResponse response, @RequestParam int id, @RequestParam String userName, @RequestParam String password, @RequestParam int typeUser, @RequestParam String address, @RequestParam String phone) throws IOException {
-        this.id = id;
-        this.userName=userName;
-        this.password = password;
-        this.idTypeUser=typeUser;
-        this.address=address;
-        this.phone=phone;
-
-        User user = new User(id,userName,password,address,phone,typeUser);
-        if(userService.updateEmployee(user)){
-            int pos = userService.searchPosition(employees, id);
-            if(pos!=-1)
-                employees.set(pos, user);
-        }
-
-        response.sendRedirect("/users/employees");
+        return createEdit(user,true);
     }
 
     @GetMapping("/searchEmployee")
@@ -174,6 +111,67 @@ public class UserController {
         if (!searchUsers.isEmpty()){
             modelAndView.addObject("users", searchUsers);
         }
+
+        return modelAndView;
+    }
+
+    @PostMapping("/addEmployee")
+    public ModelAndView createEmployee(@Valid User user, BindingResult result) throws JsonProcessingException {
+
+        if(result.hasErrors())
+            return createEdit(user, false,result.toString());
+
+        if(userService.createEmployee(user))
+            employees.add(user);
+
+        return getUsers();
+    }
+
+    @PutMapping("/editEmployee")
+    public ModelAndView editEmployee(@Valid User user, BindingResult result) throws IOException {
+
+        if(result.hasErrors())
+            return createEdit(user, true, result.toString());
+
+        if(userService.updateEmployee(user)){
+            int pos = userService.searchPosition(employees, user.getIdUser());
+            if(pos!=-1)
+                employees.set(pos, user);
+        }
+
+       return getUsers();
+    }
+
+    @DeleteMapping("/delete")
+    public ModelAndView delete(@RequestParam int idUser) throws JsonProcessingException {
+        User user = userService.getEmployeeById(idUser);
+
+        if (user==null)
+            return getUsers();
+
+        userService.delete(user);
+
+        return getUsers();
+    }
+
+    private ModelAndView createEdit(final User user, boolean edit) throws JsonProcessingException {
+        return createEdit(user,edit,null);
+    }
+
+    private ModelAndView createEdit(final User user, boolean edit, final String message) throws JsonProcessingException {
+        if(typesUser.isEmpty())
+            typesUser = typeUserService.getTypesUsers();
+
+        ModelAndView modelAndView;
+
+        if(edit)
+            modelAndView = new ModelAndView("/employee/editEmployee");
+        else
+            modelAndView = new ModelAndView("/employee/createEmployee");
+
+        modelAndView.addObject("user",user);
+        modelAndView.addObject("typesUser",typesUser);
+        modelAndView.addObject("error",message);
 
         return modelAndView;
     }

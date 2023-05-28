@@ -1,25 +1,34 @@
 package tfg.front.domain;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class Product {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     int idProduct;
+    @NotBlank(message = "{Blank.Product.name}")
+    @Size(max = 50,message = "{Size.Product.name}")
     String nameProduct;
-    int idProvider;
+    @NotNull(message = "{Null.Product.provider}")
+    int provider;
+    @Size(max = 50,message = "{Size.Product.category}")
     String category;
+    @NotNull(message = "{Null.Product.price}")
     double price;
+    @NotNull(message = "{Null.Product.stock}")
     int stock;
 
-    public Product(int idProduct, String nameProduct, int idProvider, String category, double price, int stock) {
-        this.idProduct = idProduct;
-        this.nameProduct = nameProduct;
-        this.idProvider = idProvider;
-        this.category = category;
-        this.price = price;
-        this.stock = stock;
-    }
 
-    public Product() {
-    }
+    public Product() {}
 
     public int getIdProduct() {
         return idProduct;
@@ -27,6 +36,14 @@ public class Product {
 
     public void setIdProduct(int idProduct) {
         this.idProduct = idProduct;
+    }
+
+    public int getProvider() {
+        return provider;
+    }
+
+    public void setProvider(int provider) {
+        this.provider = provider;
     }
 
     public String getNameProduct() {
@@ -38,11 +55,11 @@ public class Product {
     }
 
     public int getIdProvider() {
-        return idProvider;
+        return provider;
     }
 
-    public void setIdProvider(int idProvider) {
-        this.idProvider = idProvider;
+    public void setIdProvider(int provider) {
+        this.provider = provider;
     }
 
     public String getCategory() {
@@ -74,7 +91,7 @@ public class Product {
         return "Product{" +
                 "idProduct=" + idProduct +
                 ", nameProduct='" + nameProduct + '\'' +
-                ", idProvider=" + idProvider +
+                ", provider=" + provider +
                 ", category='" + category + '\'' +
                 ", price=" + price +
                 ", stock=" + stock +

@@ -1,19 +1,29 @@
 package tfg.front.domain;
 
-public class Provider {
-    int idProvider;
-    String nameProvider;
-    String address;
-    String phone;
-    String products;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
-    public Provider(int idProvider, String nameProvider, String address, String phone, String products) {
-        this.idProvider = idProvider;
-        this.nameProvider = nameProvider;
-        this.address = address;
-        this.phone = phone;
-        this.products = products;
-    }
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
+public class Provider {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    int idProvider;
+    @NotBlank(message = "{Blank.Provider.name}")
+    @Size(max = 50,message = "{Size.Provider.name}")
+    String nameProvider;
+    @Size(max = 200,message = "{Size.Provider.Address}")
+    String address;
+    @Pattern(regexp = "^(\\+\\d{1,2}( )?)?((\\(\\d{1,3}\\))|\\d{1,3})[- .]?\\d{3,4}[- .]?\\d{4}$", message ="{Pattern.Provider.phone}")
+    String phone;
+    @Size(max = 50,message = "{Size.Provider.description}")
+    String productDescription;
 
     public Provider() {
     }
@@ -50,12 +60,12 @@ public class Provider {
         this.phone = phone;
     }
 
-    public String getProducts() {
-        return products;
+    public String getProductDescription() {
+        return productDescription;
     }
 
-    public void setProducts(String products) {
-        this.products = products;
+    public void setProductDescription(String productDescription) {
+        this.productDescription = productDescription;
     }
 
     @Override
@@ -65,7 +75,7 @@ public class Provider {
                 ", nameProvider='" + nameProvider + '\'' +
                 ", address='" + address + '\'' +
                 ", phone='" + phone + '\'' +
-                ", products='" + products + '\'' +
+                ", productDescription='" + productDescription + '\'' +
                 '}';
     }
 }

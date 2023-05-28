@@ -10,6 +10,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import tfg.front.Synchronized;
@@ -23,6 +24,7 @@ import java.util.List;
 
 @Slf4j
 @Service
+@Transactional
 public class ArticleServiceImpl extends AbstractClient implements ArticleService {
     @Autowired
     protected ArticleServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized) throws IOException {
@@ -49,24 +51,24 @@ public class ArticleServiceImpl extends AbstractClient implements ArticleService
     }
 
     @Override
-    public Article searchProviderById(List<Article> articles, int id) {
-        boolean found = false;
-        int counter = 0;
-        Article article;
+    public List<Article> getArticlesByFamily(int idFamily) throws JsonProcessingException {
+        String uri = baseUrl+"/articles/family/"+idFamily;
+        ResponseEntity<List> response = restTemplate.exchange(uri, HttpMethod.GET,null, List.class);
 
-        while (counter<articles.size() && !found)
-        {
-            if(articles.get(counter).getIdArticle() == id)
-                found=true;
-            else counter++;
-        }
+        return getArticles(response);
+    }
 
-        if(found)
-            article = articles.get(counter);
-        else
-            article=null;
+    @Override
+    public Article getArticleById(int id){
+        String uri = baseUrl+"/articles/"+id;
+        Article article = restTemplate.getForObject(uri,Article.class);
 
         return article;
+    }
+
+    @Override
+    public Article create() {
+        return new Article();
     }
 
     @Override
@@ -109,12 +111,12 @@ public class ArticleServiceImpl extends AbstractClient implements ArticleService
                 created = true;
 
                 String sql = "Insert into article values(\'"+article.getIdArticle()+"\', \'"+article.getNameSales()+"\', \'"+article.getPriceSales()+"\', " +
-                "\'"+article.getUnits()+"\' ,\'"+article.getIdFamily()+"\' ,\'"+article.getNumBatch()+"\',\'"+article.getStock()+"\')";
+                "\'"+article.getUnits()+"\' ,\'"+article.getFamily()+"\' ,\'"+article.getNumBatch()+"\',\'"+article.getStock()+"\')";
                 aSynchronized.sqlCommands.add(sql);
             }
 
         }catch (HttpClientErrorException e){
-            log.error("Error: "+e);
+            return created;
         }
 
         return created;
@@ -124,7 +126,7 @@ public class ArticleServiceImpl extends AbstractClient implements ArticleService
     public boolean updateArticle(Article article) {
         boolean updated = false;
         String id = String.valueOf(article.getIdArticle());
-        String uri = baseUrl+"/articles"+id;
+        String uri = baseUrl+"/articles/"+id;
         HttpEntity<Article>entity = new HttpEntity<>(article);
 
         try {
@@ -132,14 +134,26 @@ public class ArticleServiceImpl extends AbstractClient implements ArticleService
             if (response.getStatusCode().is2xxSuccessful()) {
                 updated = true;
                 String sql = "Update article set nameSales=\'"+article.getNameSales()+"\', priceSales=\'"+article.getPriceSales()+"\', units=" +
-                        "\'"+article.getUnits()+"\', family=\'"+article.getIdFamily()+"\', numBatch=\'"+article.getNumBatch()+"\', stock=\'"+article.getStock()+"\' where idArticle="+article.getIdArticle();
+                        "\'"+article.getUnits()+"\', family=\'"+article.getFamily()+"\', numBatch=\'"+article.getNumBatch()+"\', stock=\'"+article.getStock()+"\' where idArticle="+article.getIdArticle();
                 aSynchronized.sqlCommands.add(sql);
             }
 
         }catch (HttpClientErrorException e){
-            log.error("Error: "+e);
+            return updated;
         }
 
         return updated;
+    }
+
+    @Override
+    public void delete(Article article) {
+        String id = String.valueOf(article.getIdArticle());
+        String uri = baseUrl+"/articles/"+id;
+
+        HttpEntity<Article> entity = new HttpEntity<>(article);
+        restTemplate.exchange(uri,HttpMethod.DELETE,entity,Article.class);
+
+        String sql = "Delete from article where idArticle="+id;
+        aSynchronized.sqlCommands.add(sql);
     }
 }

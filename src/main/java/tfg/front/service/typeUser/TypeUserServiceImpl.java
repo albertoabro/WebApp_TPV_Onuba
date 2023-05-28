@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import tfg.front.Synchronized;
 import tfg.front.domain.TypeUser;
@@ -22,6 +23,7 @@ import java.util.List;
 
 @Slf4j
 @Service
+@Transactional
 public class TypeUserServiceImpl extends AbstractClient implements TypeUserService{
     @Autowired
     protected TypeUserServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized) throws IOException {super(restTemplate, aSynchronized);}

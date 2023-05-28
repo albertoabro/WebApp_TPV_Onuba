@@ -9,10 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import tfg.front.Synchronized;
 import tfg.front.domain.Traceability;
+import tfg.front.domain.TraceabilityToServer;
 import tfg.front.service.AbstractClient;
 
 import java.io.IOException;
@@ -22,6 +24,7 @@ import java.util.List;
 
 @Slf4j
 @Service
+@Transactional
 public class TraceabilityServiceImpl extends AbstractClient implements TraceabilityService{
     @Autowired
     protected TraceabilityServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized) throws IOException {
@@ -43,29 +46,28 @@ public class TraceabilityServiceImpl extends AbstractClient implements Traceabil
     public List<Traceability> getTraceabilities() throws JsonProcessingException {
         String uri = baseUrl+"/traceabilities";
         ResponseEntity<List> response = restTemplate.exchange(uri, HttpMethod.GET, null, List.class);
-
         return getTraceabilities(response);
     }
 
     @Override
-    public Traceability searchTraceabilityById(List<Traceability> traceabilities, int id) {
-        boolean found = false;
-        int counter = 0;
-        Traceability traceability;
-
-        while (counter<traceabilities.size() && !found)
-        {
-            if (traceabilities.get(counter).getIdTraceability()==id)
-                found=true;
-            else counter++;
-        }
-
-        if (found)
-            traceability = traceabilities.get(counter);
-        else
-            traceability = null;
+    public Traceability getTraceabilityById(int id) {
+        String uri = baseUrl+"/traceabilities/"+id;
+        Traceability traceability = restTemplate.getForObject(uri, Traceability.class);
 
         return traceability;
+    }
+
+    @Override
+    public Traceability getTraceabilityByNumberBatch(int numberBatch) {
+        String uri = baseUrl+"/traceabilities/search/"+numberBatch;
+        Traceability traceability = restTemplate.getForObject(uri,Traceability.class);
+
+        return traceability;
+    }
+
+    @Override
+    public Traceability create() {
+        return new Traceability();
     }
 
     @Override
@@ -87,22 +89,24 @@ public class TraceabilityServiceImpl extends AbstractClient implements Traceabil
     }
 
     @Override
-    public boolean createTraceability(Traceability traceability) {
-        boolean created = false;
-        String uri = baseUrl+"/traceabilities";
+    public Traceability createTraceability(TraceabilityToServer traceability) {
 
+        String uri = baseUrl+"/traceabilities";
+        Traceability traceabilityFromServer;
         try{
             ResponseEntity<Traceability> response = restTemplate.postForEntity(uri, traceability, Traceability.class);
-            if(response.getStatusCode().is2xxSuccessful()) {
-                created = true;
-                String sql = "Insert into traceability values(\'"+traceability.getIdTraceability()+"\', \'"+traceability.getIdArticle()+"\', \'"+traceability.getIdProduct()+"\', " +
+            if(response.getBody()!=null) {
+                traceabilityFromServer = response.getBody();
+                String sql = "Insert into traceability values(\'"+traceability.getIdTraceability()+"\', \'"+traceability.getArticle()+"\', "+
                         "\'"+traceability.getNumberBatch()+"\' ,\'"+traceability.getExpirationDate()+"\' )";
                 aSynchronized.sqlCommands.add(sql);
             }
+            else
+                traceabilityFromServer=null;
         }catch (HttpClientErrorException e){
-            log.error("Error: "+e);
+            return null;
         }
 
-        return created;
+        return traceabilityFromServer;
     }
 }

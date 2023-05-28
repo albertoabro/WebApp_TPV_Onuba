@@ -10,27 +10,37 @@
 <body>
 <section> <div th:insert="~{menu}"></div></section>
 <section> <div th:insert="~{family/menuFamily}"></div></section>
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-sm-8">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>NOMBRE</th>
-                    <th>ACCIÓN</th>
-                </tr>
-                </thead>
-                <tbody>
 
-                <tr th:each="family:${family}">
-                    <td th:text="${family.nameFamily}"></td>
-                    <td> <a th:href="@{/families/editFamily(id=${family.idFamily})}"> Editar</a></td>
-                </tr>
+<span th:if="${error!=null}" th:text="${error}"></span>
 
-                </tbody>
-            </table>
+<form action="/families/delete" method="post">
+    <input type="hidden" name="_method" value="delete" readonly>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-sm-8">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>NOMBRE</th>
+                        <th>ARTICULOS</th>
+                        <th>ACCIONES</th>
+                        <th> </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="family:${family}">
+                            <td th:text="${family.nameFamily}"></td>
+                            <td> <a class="btn btn-secondary mx-md-1" th:href="@{/articles/articlesByFamily(id=${family.idFamily})}"> Artículos</a></td>
+                            <td> <a class="btn btn-secondary mx-md-1" th:href="@{/families/editFamily(id=${family.idFamily})}"> Editar</a></td>
+                            <td class="d-md-flex justify-content-md-end">
+                                <button type="submit" class="btn btn-secondary" name="idFamily" th:value="${family.idFamily}" onclick="return confirm('Borrar')">Eliminar</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
+</form>
 </body>
 </html>

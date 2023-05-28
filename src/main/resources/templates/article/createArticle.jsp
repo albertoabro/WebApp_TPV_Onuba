@@ -12,40 +12,38 @@
 <section> <div th:insert="~{article/menuArticle}"></div></section>
 
 <div class="container px-5 my-5">
-    <form method="POST" action="/articles/addArticle">
+    <form method="POST" action="/articles/addArticle" th:object="${article}" class="form">
         <div class="form-floating mb-3">
-            <input class="form-control" name="nameSales" id="nombre" type="text" placeholder="Nombre" data-sb-validations="required" />
-            <label for="nombre">Nombre</label>
-            <div class="invalid-feedback" data-sb-feedback="nombre:required">Nombre is required.</div>
+            <input class="form-control" id="nameSales" type="text" placeholder="Nombre" th:field="*{nameSales}"/>
+            <label for="nameSales">Nombre</label>
+            <div class="alert alert-warning" th:if="${#fields.hasErrors('nameSales')}" th:errors="*{nameSales}"></div>
         </div>
         <div class="form-floating mb-3">
-            <input class="form-control" name="price" id="price" type="text" placeholder="Precio" data-sb-validations="required" />
-            <label for="price">Precio</label>
-            <div class="invalid-feedback"  data-sb-feedback="price:required">Price is required.</div>
+            <input class="form-control" id="priceSales" type="text" placeholder="Precio" th:field="*{priceSales}"/>
+            <label for="priceSales">Precio</label>
+            <div class="alert alert-warning" th:if="${#fields.hasErrors('priceSales')}" th:errors="*{priceSales}"></div>
         </div>
         <div class="form-floating mb-3">
-            <select class="form-select" name="idFamily" id="family" aria-label="Familia">
+            <select class="form-select" id="family" aria-label="Familia" th:field="*{family}">
                 <div th:each="family:${families}">
                     <option th:value="${family.idFamily}" th:text="${family.nameFamily}"></option>
                 </div>
             </select>
             <label for="family">Familia</label>
+            <div class="alert alert-warning" th:if="${#fields.hasErrors('family')}" th:errors="*{family}"></div>
         </div>
         <div class="form-floating mb-3">
-            <input class="form-control" name="numBatch" id="numBatch" type="text" placeholder="Dirección" data-sb-validations="required" />
+            <input class="form-control" id="numBatch" type="text" placeholder="Número de Lote" th:field="*{numBatch}"/>
             <label for="numBatch">Número de Lote</label>
-            <div class="invalid-feedback"  data-sb-feedback="numBatch:required">NumBatch is required.</div>
+            <div class="alert alert-warning" th:if="${#fields.hasErrors('numBatch')}" th:errors="*{numBatch}"></div>
         </div>
 
         <div class="form-floating mb-3">
-            <input class="form-control" name="stock" id="stock" type="text" placeholder="price" data-sb-validations="required" />
-            <label for="price">Stock</label>
-            <div class="invalid-feedback" data-sb-feedback="price:required">Stock is required.</div>
+            <input class="form-control" id="stock" type="text" placeholder="Stock" th:field="*{stock}" />
+            <label for="stock">Stock</label>
+            <div class="alert alert-warning" th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}"></div>
         </div>
 
-        <div class="d-none" id="submitErrorMessage">
-            <div class="text-center text-danger mb-3">Error sending message!</div>
-        </div>
         <div class="d-grid">
             <button class="btn btn-primary btn-lg" id="submitButton" type="submit">Registrar</button>
         </div>

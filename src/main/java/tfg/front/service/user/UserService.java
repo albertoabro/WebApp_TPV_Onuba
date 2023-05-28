@@ -12,7 +12,8 @@ public interface UserService {
 
     List<User> getUsers() throws JsonProcessingException;
 
-    User searchEmployeeById(List<User> employees, int id);
+    User create();
+    User getEmployeeById(int id);
 
     int searchPosition(List<User> employees, int id);
 
@@ -21,4 +22,6 @@ public interface UserService {
     boolean createEmployee(User user);
 
     boolean updateEmployee(User user);
+
+    void delete(User user);
 }

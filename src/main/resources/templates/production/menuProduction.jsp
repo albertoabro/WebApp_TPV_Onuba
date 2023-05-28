@@ -26,7 +26,7 @@
                             <a class="nav-link active" aria-current="page" href="/traceabilities/registerTraceability"> Nueva Producción</a>
                         </li>
                         <form class="d-flex" method="get" action="/traceabilities/searchTraceability">
-                            <input class="form-control me-2" name="userName" type="search" placeholder="Buscar por" aria-label="Search">
+                            <input class="form-control me-2" name="numberBatch" type="search" placeholder="Buscar por número de lote" aria-label="Search" required>
                             <button class="btn btn-outline-success" type="submit">Buscar</button>
                         </form>
                     </ul>

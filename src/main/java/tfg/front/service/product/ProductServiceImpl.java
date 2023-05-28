@@ -10,10 +10,13 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import tfg.front.Synchronized;
 import tfg.front.domain.Product;
+import tfg.front.domain.TraceabilityProduct;
 import tfg.front.service.AbstractClient;
 
 import java.io.IOException;
@@ -23,6 +26,7 @@ import java.util.List;
 
 @Slf4j
 @Service
+@Transactional
 public class ProductServiceImpl extends AbstractClient implements ProductService {
     @Autowired
     protected ProductServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized) throws IOException {
@@ -49,25 +53,25 @@ public class ProductServiceImpl extends AbstractClient implements ProductService
     }
 
     @Override
-    public Product searchProductById(List<Product> products, int id) {
-        boolean found = false;
-        int counter = 0;
-        Product searchProduct;
+    public List<Product> getProductsByProvider(int idProvider) throws JsonProcessingException {
+        String uri = baseUrl+"/products/provider/"+idProvider;
+        ResponseEntity<List> response = restTemplate.exchange(uri,HttpMethod.GET,null, List.class);
 
-        while (counter<products.size() && !found)
-        {
-            if(products.get(counter).getIdProduct() == id)
-                found=true;
-            else
-                counter++;
-        }
+        return getProducts(response);
+    }
 
-        if(found)
-            searchProduct = products.get(counter);
-        else
-            searchProduct=null;
+    @Override
+    public Product getProductById(int id){
 
-        return searchProduct;
+        String uri = baseUrl+"/products/"+id;
+        Product product = restTemplate.getForObject(uri, Product.class);
+
+        return product;
+    }
+
+    @Override
+    public Product create() {
+       return new Product();
     }
 
     @Override
@@ -114,7 +118,7 @@ public class ProductServiceImpl extends AbstractClient implements ProductService
             }
 
         }catch (HttpClientErrorException e){
-            log.error("Error: "+ e);
+            return created;
         }
         return created;
     }
@@ -135,8 +139,39 @@ public class ProductServiceImpl extends AbstractClient implements ProductService
             }
 
         }catch (HttpClientErrorException e){
-            log.error("Error: "+e);
+            return updated;
         }
         return updated;
+    }
+
+    @Override
+    public boolean delete(Product product) {
+        String id = String.valueOf(product.getIdProduct());
+        String uri = baseUrl+"/products/"+id;
+        boolean deleled = false;
+
+        HttpEntity<Product> entity = new HttpEntity<>(product);
+        if(!restTemplate.exchange(uri,HttpMethod.DELETE,entity, Product.class).getStatusCode().is4xxClientError()){
+            deleled =true;
+            String sql = "Delete from product where idProduct="+id;
+            aSynchronized.sqlCommands.add(sql);
+        }
+
+        return deleled;
+    }
+
+    @Override
+    public boolean existTraceability(List<TraceabilityProduct> traceabilityProducts, Product product) {
+        boolean existTraceability = false;
+        int i = 0;
+
+        while(i<traceabilityProducts.size() && !existTraceability) {
+            if (traceabilityProducts.get(i).getIdProduct() == product.getIdProduct())
+                existTraceability = true;
+            else
+                i++;
+        }
+
+        return existTraceability;
     }
 }

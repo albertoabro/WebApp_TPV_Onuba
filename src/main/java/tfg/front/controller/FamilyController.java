@@ -2,11 +2,14 @@ package tfg.front.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import tfg.front.domain.Article;
 import tfg.front.domain.Family;
+import tfg.front.service.article.ArticleService;
 import tfg.front.service.family.FamilyService;
 
 import java.io.IOException;
@@ -17,13 +20,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/families")
 public class FamilyController {
-    String nameFamily;
-    int id;
-
     private List<Family> families = new ArrayList<>();
     private final FamilyService familyService;
+    private final ArticleService articleService;
 
-    public FamilyController(FamilyService familyService) {this.familyService = familyService;}
+    public FamilyController(FamilyService familyService, ArticleService articleService) {this.familyService = familyService;
+        this.articleService = articleService;
+    }
 
     @GetMapping("/families")
     public ModelAndView getFamilies() throws JsonProcessingException {
@@ -37,8 +40,8 @@ public class FamilyController {
 
     @GetMapping("/family")
     public ModelAndView getFamilyById(HttpServletRequest request) throws JsonProcessingException{
-        id = Integer.parseInt(request.getParameter("id"));
-        Family searchFamily = familyService.searchFamily(families, id);
+        int id = Integer.parseInt(request.getParameter("id"));
+        Family searchFamily = familyService.getFamilyById(id);
         ModelAndView modelAndView;
 
         if(searchFamily!=null)
@@ -54,26 +57,17 @@ public class FamilyController {
 
     @GetMapping("/registerFamily")
     public ModelAndView registerFamily(){
-        ModelAndView modelAndView = new ModelAndView("/family/createFamily");
-        return modelAndView;
+        final Family family = familyService.create();
+
+        return createEdit(family, false);
     }
 
     @GetMapping("/editFamily")
     public ModelAndView viewEditFamily(HttpServletRequest request) throws JsonProcessingException{
-        id = Integer.parseInt(request.getParameter("id"));
-        Family family = familyService.searchFamily(families,id);
-        ModelAndView modelAndView;
+        int id = Integer.parseInt(request.getParameter("id"));
+        Family family = familyService.getFamilyById(id);
 
-        if(!families.isEmpty())
-        {
-            modelAndView = new ModelAndView("/family/editFamily");
-            modelAndView.addObject("family",family);
-        }
-
-        else
-            modelAndView = getFamilies();
-
-        return modelAndView;
+        return createEdit(family,true);
     }
 
     @GetMapping("/searchFamily")
@@ -88,36 +82,57 @@ public class FamilyController {
     }
 
     @PostMapping("/addFamily")
-    public void createFamily(HttpServletResponse response, @RequestParam String nameFamily) throws IOException{
-        if(families.isEmpty())
-            this.id=1;
-        else
-            this.id=families.get(families.size()-1).getIdFamily()+1;
-        this.nameFamily = nameFamily;
-
-        log.info("ID: "+id);
-        Family family = new Family(id, nameFamily);
+    public ModelAndView createFamily(@Valid Family family, BindingResult result) throws IOException{
+        if (result.hasErrors())
+            return createEdit(family,false,result.toString());
 
         if(familyService.createFamily(family))
             families.add(family);
 
-        response.sendRedirect("/families/families");
+        return getFamilies();
     }
 
-    @PutMapping("/editfamily")
-    public void editFamily(HttpServletResponse response, @RequestParam int id, @RequestParam String nameFamily) throws IOException{
-        this.id=id;
-        this.nameFamily=nameFamily;
+    @PutMapping("/editFamily")
+    public ModelAndView editFamily(@Valid Family family, BindingResult result) throws IOException{
 
-        Family family = new Family(id, nameFamily);
+        if(result.hasErrors())
+            return createEdit(family,true,result.toString());
 
         if(familyService.updateFamily(family))
         {
-            int pos = familyService.searchPosition(families,id);
+            int pos = familyService.searchPosition(families,family.getIdFamily());
             if(pos!=-1)
                 families.set(pos, family);
         }
 
-        response.sendRedirect("/families/families");
+        return getFamilies();
+    }
+    @DeleteMapping("/delete")
+    public ModelAndView delete(@RequestParam int idFamily) throws JsonProcessingException {
+        Family family = familyService.getFamilyById(idFamily);
+
+        List<Article> articles = articleService.getArticlesByFamily(family.getIdFamily());
+        if(articles.isEmpty())
+            familyService.delete(family);
+
+        return getFamilies();
+    }
+
+    private ModelAndView createEdit(Family family, boolean edit) {
+        return createEdit(family,edit,null);
+    }
+
+    private ModelAndView createEdit(Family family, boolean edit, String message) {
+        ModelAndView modelAndView;
+
+        if(edit)
+            modelAndView=new ModelAndView("/family/editFamily");
+        else
+            modelAndView=new ModelAndView("/family/createFamily");
+
+        modelAndView.addObject("family",family);
+        modelAndView.addObject("error",message);
+
+        return modelAndView;
     }
 }
