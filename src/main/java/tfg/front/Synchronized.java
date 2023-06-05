@@ -41,7 +41,7 @@ public class Synchronized{
     private File createAndWrite() throws IOException {
 
         File dataBase;
-        dataBase = new File(dirPortatil+"sql.txt");
+        dataBase = new File(dirPc+"sql.txt");
         dataBase.createNewFile();
         BufferedWriter writer = new BufferedWriter(new FileWriter(dataBase));
 
@@ -86,7 +86,7 @@ public class Synchronized{
         boolean sync;
         try {
             String path = "/download/sales.txt";
-            OutputStream stream = new FileOutputStream(dirPortatil+"sales.txt");
+            OutputStream stream = new FileOutputStream(dirPc+"sales.txt");
             DownloadBuilder builder = client.files().downloadBuilder(path);
             builder.download(stream);
             client.files().deleteV2(path);
@@ -100,7 +100,4 @@ public class Synchronized{
         return sync;
     }
 
-    public List<String> readFile(File file){
-        return null;
-    }
 }

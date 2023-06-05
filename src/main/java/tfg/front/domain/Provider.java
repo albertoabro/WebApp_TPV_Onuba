@@ -18,6 +18,7 @@ public class Provider {
     @NotBlank(message = "{Blank.Provider.name}")
     @Size(max = 50,message = "{Size.Provider.name}")
     String nameProvider;
+    @NotBlank
     @Size(max = 200,message = "{Size.Provider.Address}")
     String address;
     @Pattern(regexp = "^(\\+\\d{1,2}( )?)?((\\(\\d{1,3}\\))|\\d{1,3})[- .]?\\d{3,4}[- .]?\\d{4}$", message ="{Pattern.Provider.phone}")
