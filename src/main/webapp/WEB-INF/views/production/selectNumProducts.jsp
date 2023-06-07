@@ -4,7 +4,6 @@
       lang="es">
 <head>
     <meta charset="UTF-8">
-    <script type="text/javascript" src="//code.jquery.com/jquery-1.6.2.js"></script>
     <title>Tpv Onuba</title>
 </head>
 <body>
@@ -36,12 +35,6 @@
                 <button class="btn btn-primary btn-lg submit" id="submitButton" type="submit">Registrar</button>
             </div>
             <br/>
-            <form action="/traceabilities/goBack" method="post">
-                <div class="d-grid">
-                    <input type="hidden" readonly="readonly" name="step" value="2">
-                    <button class="btn btn-primary btn-lg" type="submit">Atrás</button>
-                </div>
-            </form>
         </form>
     </div>
 </div>

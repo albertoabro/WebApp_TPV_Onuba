@@ -61,7 +61,7 @@ public class Synchronized{
                 dataBase.deleteOnExit();
             }
         } catch (Exception e){
-            e.printStackTrace();
+            log.info(e.getMessage());
         }
     }
 

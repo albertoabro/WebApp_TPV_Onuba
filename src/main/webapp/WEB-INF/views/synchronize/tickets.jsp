@@ -4,7 +4,6 @@
       lang="es">
 <head>
     <meta charset="UTF-8">
-    <script type="text/javascript" src="//code.jquery.com/jquery-1.6.2.js"></script>
     <title>Tpv Onuba</title>
 </head>
 <body>
