@@ -14,7 +14,6 @@ import java.util.List;
 @Slf4j
 public class Synchronized{
     String dirPc ="C:\\Users\\alber\\Desktop";
-    String dirPortatil = "D:\\Alberto\\Desktop";
     String path = "/download/";
 
     protected static final DbxRequestConfig config = DbxRequestConfig.newBuilder("dropbox/ServerToTpv1").build();
