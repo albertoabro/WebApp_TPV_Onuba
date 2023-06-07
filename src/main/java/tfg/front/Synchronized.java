@@ -19,7 +19,7 @@ public class Synchronized{
     protected static final DbxRequestConfig config = DbxRequestConfig.newBuilder("dropbox/ServerToTpv1").build();
     protected DbxClientV2 client;
     Security security = Security.getSecurityToken();
-    public static List<String> sqlCommands = new ArrayList<>();
+    public List<String> sqlCommands = new ArrayList<>();
 
     public Synchronized() throws IOException {
         client = new DbxClientV2(config, security.token);
