@@ -6,18 +6,26 @@ import java.io.*;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class Security {
+public class Security{
 
     static Security security;
     String token;
+    private static final String path = new File("token.dat").getPath();
+
+
     public Security() throws IOException {
         super();
         token = getToken();
     }
 
+    private String readToken() throws IOException{
+        DataInputStream reader = new DataInputStream(new FileInputStream(path));
+        return reader.readUTF();
+     }
+
     private String getToken() throws IOException {
 
-        String command  = "curl https://api.dropbox.com/oauth2/token -d grant_type=refresh_token -d refresh_token=UwXtnQOU_14AAAAAAAAAAcdhtiKGatt_e05G9WCB_6sUnZ-Y9J8e38NfLyStjUXx -u 2uvws8yubbya2zl:0ehhkv4p3uzrm1x";
+        String command  = "curl https://api.dropbox.com/oauth2/token -d grant_type=refresh_token -d refresh_token="+readToken()+" -u 2uvws8yubbya2zl:0ehhkv4p3uzrm1x";
 
         Process process = Runtime.getRuntime().exec(command);
 
