@@ -45,7 +45,7 @@ public class SynchronizeController {
 
         for(int t : terminalSelected)
             if(terminals.get(t).getIdterminal()==t+1){
-                sync.SyncWithDropBox();
+                sync.syncWithDropBox();
                 numSyncValid++;
             }
         if(numSyncValid == terminalSelected.size())

@@ -96,8 +96,8 @@ public class ProviderServiceImpl extends AbstractClient implements ProviderServi
             if(response.getStatusCode().is2xxSuccessful()) {
                 created = true;
 
-                String sql = "Insert into providers values(\'"+provider.getIdProvider()+"\', \'"+provider.getNameProvider()+"\', \'"+provider.getAddress()+"\', " +
-                        "\'"+provider.getPhone()+"\' ,\'"+provider.getProductDescription()+"\' )";
+                String sql = "Insert into providers values('" +provider.getIdProvider()+ "', '" +provider.getNameProvider()+ "', '" +provider.getAddress()+ "', " +
+                        "'" +provider.getPhone()+ "' ,'" +provider.getProductDescription()+ "' )";
                 aSynchronized.sqlCommands.add(sql);
             }
 
@@ -118,8 +118,8 @@ public class ProviderServiceImpl extends AbstractClient implements ProviderServi
             if(response.getStatusCode().is2xxSuccessful()) {
                 updated = true;
 
-                String sql = "Update providers set nameProvider=\'"+provider.getNameProvider()+"\', address=\'"+provider.getAddress()+"\', phone" +
-                        "\'"+provider.getPhone()+"\', productDescription=\'"+provider.getProductDescription()+"\'where idArticle="+provider.getIdProvider();
+                String sql = "Update providers set nameProvider='" +provider.getNameProvider()+ "', address='" +provider.getAddress()+ "', phone" +
+                        "'" +provider.getPhone()+ "', productDescription='" +provider.getProductDescription()+ "'where idArticle=" +provider.getIdProvider();
                 aSynchronized.sqlCommands.add(sql);
             }
 

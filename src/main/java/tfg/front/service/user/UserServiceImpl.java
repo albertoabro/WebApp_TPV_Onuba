@@ -124,8 +124,8 @@ public class UserServiceImpl extends AbstractClient implements UserService{
             if (response.getStatusCode().is2xxSuccessful()) {
                 created = true;
                 
-                String sql = "Insert into users values(\'"+user.getIdUser()+"\', \'"+user.getUserName()+"\', \'"+user.getPassword()+"\', " +
-                        "\'"+user.getAddress()+"\' ,\'"+user.getPhone()+"\' ,\'"+user.getTypeUser()+"\', \'"+user.getPasswordTPV()+"\')";
+                String sql = "Insert into users values('" +user.getIdUser()+ "', '" +user.getUserName()+ "', '" +user.getPassword()+ "', " +
+                        "'" +user.getAddress()+ "' ,'" +user.getPhone()+ "' ,'" +user.getTypeUser()+ "', '" +user.getPasswordTPV()+ "')";
 
                 aSynchronized.sqlCommands.add(sql);
             }
@@ -147,8 +147,8 @@ public class UserServiceImpl extends AbstractClient implements UserService{
             if (response.getStatusCode().is2xxSuccessful()) {
                 updated = true;
 
-                String sql = "Update users set userName= \'"+user.getUserName()+"\', password= \'"+user.getPassword()+"\', address=" +
-                        "\'"+user.getAddress()+"\', phone= \'"+user.getPhone()+"\', typeUser=\'"+user.getTypeUser()+"\', passwordTPV=\'"+user.getPasswordTPV()+"\' where idUser = "+user.getIdUser();
+                String sql = "Update users set userName= '" +user.getUserName()+ "', password= '" +user.getPassword()+ "', address=" +
+                        "'" +user.getAddress()+ "', phone= '" +user.getPhone()+ "', typeUser='" +user.getTypeUser()+ "', passwordTPV='" +user.getPasswordTPV()+ "' where idUser = " +user.getIdUser();
                 aSynchronized.sqlCommands.add(sql);
             }
         }catch (HttpClientErrorException e){

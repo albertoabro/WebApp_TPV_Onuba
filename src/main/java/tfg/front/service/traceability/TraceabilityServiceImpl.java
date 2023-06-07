@@ -97,8 +97,8 @@ public class TraceabilityServiceImpl extends AbstractClient implements Traceabil
             ResponseEntity<Traceability> response = restTemplate.postForEntity(uri, traceability, Traceability.class);
             if(response.getBody()!=null) {
                 traceabilityFromServer = response.getBody();
-                String sql = "Insert into traceability values(\'"+traceability.getIdTraceability()+"\', \'"+traceability.getArticle()+"\', "+
-                        "\'"+traceability.getNumberBatch()+"\' ,\'"+traceability.getExpirationDate()+"\' )";
+                String sql = "Insert into traceability values('" +traceability.getIdTraceability()+ "', '" +traceability.getArticle()+ "', " +
+                        "'" +traceability.getNumberBatch()+ "' ,'" +traceability.getExpirationDate()+ "' )";
                 aSynchronized.sqlCommands.add(sql);
             }
             else

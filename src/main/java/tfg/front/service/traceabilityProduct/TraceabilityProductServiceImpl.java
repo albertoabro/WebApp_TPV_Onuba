@@ -89,8 +89,8 @@ public class TraceabilityProductServiceImpl extends AbstractClient implements Tr
             ResponseEntity<TraceabilityProduct> response = restTemplate.postForEntity(uri,traceabilityProduct, TraceabilityProduct.class);
             if(response.getStatusCode().is2xxSuccessful()){
                 created=true;
-                String sql = "Insert into traceabilityproducts values(\'"+traceabilityProduct.getIdAuto()+"\', " +
-                        "\'"+traceabilityProduct.getIdTraceability()+"\', \'"+traceabilityProduct.getIdProduct()+"\')";
+                String sql = "Insert into traceabilityproducts values('" +traceabilityProduct.getIdAuto()+ "', " +
+                        "'" +traceabilityProduct.getIdTraceability()+ "', '" +traceabilityProduct.getIdProduct()+ "')";
                 
                 aSynchronized.sqlCommands.add(sql);
             }

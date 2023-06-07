@@ -10,11 +10,9 @@ public class Security {
 
     static Security security;
     String token;
-    boolean exist;
     public Security() throws IOException {
         super();
         token = getToken();
-        exist = searchFile();
     }
 
     private String getToken() throws IOException {
@@ -27,19 +25,12 @@ public class Security {
         String result = new BufferedReader(new InputStreamReader(stream)).lines().collect(Collectors.joining("\n"));
 
         int posComma = result.indexOf(",");
-        String token = result.substring(18,posComma-1);
-
-        return token;
-
+        return result.substring(18,posComma-1);
     }
 
     public static Security getSecurityToken() throws IOException {
         if(security == null)
             security = new Security();
         return security;
-    }
-
-    private boolean searchFile(){
-       return false;
     }
 }

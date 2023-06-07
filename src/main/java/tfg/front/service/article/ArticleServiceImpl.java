@@ -110,8 +110,8 @@ public class ArticleServiceImpl extends AbstractClient implements ArticleService
             if (response.getStatusCode().is2xxSuccessful()) {
                 created = true;
 
-                String sql = "Insert into article values(\'"+article.getIdArticle()+"\', \'"+article.getNameSales()+"\', \'"+article.getPriceSales()+"\', " +
-                "\'"+article.getUnits()+"\' ,\'"+article.getFamily()+"\' ,\'"+article.getNumBatch()+"\',\'"+article.getStock()+"\')";
+                String sql = "Insert into article values('" +article.getIdArticle()+ "', '" +article.getNameSales()+ "', '" +article.getPriceSales()+ "', " +
+                        "'" +article.getUnits()+ "' ,'" +article.getFamily()+ "' ,'" +article.getNumBatch()+ "','" +article.getStock()+ "')";
                 aSynchronized.sqlCommands.add(sql);
             }
 
@@ -133,8 +133,8 @@ public class ArticleServiceImpl extends AbstractClient implements ArticleService
             ResponseEntity<Article>response = restTemplate.exchange(uri,HttpMethod.PUT, entity ,Article.class);
             if (response.getStatusCode().is2xxSuccessful()) {
                 updated = true;
-                String sql = "Update article set nameSales=\'"+article.getNameSales()+"\', priceSales=\'"+article.getPriceSales()+"\', units=" +
-                        "\'"+article.getUnits()+"\', family=\'"+article.getFamily()+"\', numBatch=\'"+article.getNumBatch()+"\', stock=\'"+article.getStock()+"\' where idArticle="+article.getIdArticle();
+                String sql = "Update article set nameSales='" +article.getNameSales()+ "', priceSales='" +article.getPriceSales()+ "', units=" +
+                        "'" +article.getUnits()+ "', family='" +article.getFamily()+ "', numBatch='" +article.getNumBatch()+ "', stock='" +article.getStock()+ "' where idArticle=" +article.getIdArticle();
                 aSynchronized.sqlCommands.add(sql);
             }
 

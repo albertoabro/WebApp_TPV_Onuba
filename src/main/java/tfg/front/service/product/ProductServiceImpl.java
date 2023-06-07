@@ -112,8 +112,8 @@ public class ProductServiceImpl extends AbstractClient implements ProductService
             ResponseEntity<Product> response = restTemplate.postForEntity(uri, product, Product.class);
             if(response.getStatusCode().is2xxSuccessful()) {
                 created = true;
-                String sql = "Insert into product values (\'"+product.getIdProduct()+"\', \'"+product.getNameProduct()+"\', \'"+product.getIdProvider()+"\', " +
-                        "\'"+product.getCategory()+"\', \'"+product.getPrice()+"\', \'"+product.getStock()+"\')";
+                String sql = "Insert into product values ('" +product.getIdProduct()+ "', '" +product.getNameProduct()+ "', '" +product.getIdProvider()+ "', " +
+                        "'" +product.getCategory()+ "', '" +product.getPrice()+ "', '" +product.getStock()+ "')";
                 aSynchronized.sqlCommands.add(sql);
             }
 
@@ -133,8 +133,8 @@ public class ProductServiceImpl extends AbstractClient implements ProductService
             ResponseEntity<Product> response = restTemplate.exchange(uri, HttpMethod.PUT, entity, Product.class);
             if(response.getStatusCode().is2xxSuccessful()) {
                 updated = true;
-                String sql = "Update product set nameProduct=\'"+product.getNameProduct()+"\', provider=\'"+product.getIdProvider()+"\', category="+
-                        "\'"+product.getCategory()+"\', price=\'"+product.getPrice()+"\', stock=\'"+product.getStock()+"\' where idProduct="+product.getIdProduct();
+                String sql = "Update product set nameProduct='" +product.getNameProduct()+ "', provider='" +product.getIdProvider()+ "', category=" +
+                        "'" +product.getCategory()+ "', price='" +product.getPrice()+ "', stock='" +product.getStock()+ "' where idProduct=" +product.getIdProduct();
                 aSynchronized.sqlCommands.add(sql);
             }
 

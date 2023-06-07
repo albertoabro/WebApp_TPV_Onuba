@@ -4,12 +4,9 @@ import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.*;
-import com.dropbox.core.v2.users.FullAccount;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.io.*;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,18 +19,10 @@ public class Synchronized{
     protected static final DbxRequestConfig config = DbxRequestConfig.newBuilder("dropbox/ServerToTpv1").build();
     protected DbxClientV2 client;
     Security security = Security.getSecurityToken();
-    public List<String> sqlCommands = new ArrayList<>();
+    public static List<String> sqlCommands = new ArrayList<>();
 
     public Synchronized() throws IOException {
         client = new DbxClientV2(config, security.token);
-    }
-
-    public List<String> getSqlCommands() {
-        return sqlCommands;
-    }
-
-    public void setSqlCommands(List<String> sqlCommands) {
-        this.sqlCommands = sqlCommands;
     }
 
     private File createAndWrite() throws IOException {
@@ -52,7 +41,7 @@ public class Synchronized{
         return dataBase;
     }
 
-    public boolean SyncWithDropBox()  {
+    public boolean syncWithDropBox()  {
         boolean sync = false;
 
         try {
