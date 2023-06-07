@@ -16,7 +16,6 @@ import tfg.front.Synchronized;
 import tfg.front.domain.TypeUser;
 import tfg.front.service.AbstractClient;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +25,7 @@ import java.util.List;
 @Transactional
 public class TypeUserServiceImpl extends AbstractClient implements TypeUserService{
     @Autowired
-    protected TypeUserServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized) throws IOException {super(restTemplate, aSynchronized);}
+    protected TypeUserServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized){super(restTemplate, aSynchronized);}
 
     @Override
     public List<TypeUser> getTypesUsers() throws JsonProcessingException {
@@ -41,8 +40,6 @@ public class TypeUserServiceImpl extends AbstractClient implements TypeUserServi
         Gson gson = new Gson();
         Type typeTypeUserList = new TypeToken<ArrayList<TypeUser>>(){}.getType();
 
-        List<TypeUser>typeUsers = gson.fromJson(json,typeTypeUserList);
-
-        return typeUsers;
+        return gson.fromJson(json,typeTypeUserList);
     }
 }
