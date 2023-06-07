@@ -28,7 +28,7 @@ public class TraceabilityController {
     private final ProductService productService;
     private final ArticleService articleService;
     private final TraceabilityProductService traceabilityProductService;
-    private final String TRACEABILITY = "traceability";
+    private final static String sendTraceability = "traceability";
 
     public TraceabilityController(TraceabilityService traceabilityService, ProductService productService, ArticleService articleService, TraceabilityProductService traceabilityProductService) {
         this.traceabilityService = traceabilityService;
@@ -59,7 +59,7 @@ public class TraceabilityController {
 
         Article article = articleService.getArticleById(traceability.getArticle());
 
-        modelAndView.addObject(TRACEABILITY, traceability);
+        modelAndView.addObject(sendTraceability, traceability);
         modelAndView.addObject("article", article);
         modelAndView.addObject("idsProducts",idsProducts);
 
@@ -80,7 +80,7 @@ public class TraceabilityController {
 
             Article article = articleService.getArticleById(traceability.getArticle());
 
-            modelAndView.addObject(TRACEABILITY, traceability);
+            modelAndView.addObject(sendTraceability, traceability);
             modelAndView.addObject("article", article);
             modelAndView.addObject("idsProducts",idsProducts);
 
@@ -106,7 +106,7 @@ public class TraceabilityController {
         ModelAndView modelAndView = new ModelAndView("/production/products");
         List<Product> products = productService.getProducts();
 
-        modelAndView.addObject(TRACEABILITY, traceability);
+        modelAndView.addObject(sendTraceability, traceability);
         modelAndView.addObject("products",products);
 
         return modelAndView;
@@ -125,7 +125,7 @@ public class TraceabilityController {
             productList.add(productService.getProductById(idProduct));
         }
 
-        modelAndView.addObject(TRACEABILITY,traceability);
+        modelAndView.addObject(sendTraceability,traceability);
         modelAndView.addObject("products", productList);
         
         return modelAndView;
@@ -175,7 +175,7 @@ public class TraceabilityController {
         else
             traceability.setNumberBatch(traceabilities.get(traceabilities.size()-1).getNumberBatch()+1);
 
-        modelAndView.addObject(TRACEABILITY,traceability);
+        modelAndView.addObject(sendTraceability,traceability);
         modelAndView.addObject("articles",articles);
         modelAndView.addObject("error", message);
 

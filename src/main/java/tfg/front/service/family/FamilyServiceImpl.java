@@ -31,7 +31,7 @@ public class FamilyServiceImpl extends AbstractClient implements FamilyService {
         super(restTemplate, aSynchronized);
     }
 
-    private final String FAMILIES = "/families/";
+    private final static String urlFamilies = "/families/";
 
     private List<Family> getFamilies(ResponseEntity<List> response) throws JsonProcessingException{
         List<Family> families;
@@ -54,7 +54,7 @@ public class FamilyServiceImpl extends AbstractClient implements FamilyService {
 
     @Override
     public Family getFamilyById(int idFamily) {
-        String uri = baseUrl+FAMILIES+idFamily;
+        String uri = baseUrl+urlFamilies+idFamily;
         return  restTemplate.getForObject(uri,Family.class);
     }
 
@@ -140,7 +140,7 @@ public class FamilyServiceImpl extends AbstractClient implements FamilyService {
     public boolean updateFamily(Family family) {
         boolean updated = false;
         String id = String.valueOf(family.getIdFamily());
-        String uri = baseUrl+FAMILIES+id;
+        String uri = baseUrl+urlFamilies+id;
         HttpEntity<Family>entity = new HttpEntity<>(family);
 
         try {

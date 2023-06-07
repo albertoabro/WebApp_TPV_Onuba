@@ -31,7 +31,7 @@ public class ArticleServiceImpl extends AbstractClient implements ArticleService
         super(restTemplate, aSynchronized);
     }
     
-    private final String ARTICLES = "/articles/";
+    private final static String urlArticles = "/articles/";
 
     private List<Article> getArticles(ResponseEntity<List> response) throws JsonProcessingException{
         List<Article> articles;
@@ -61,7 +61,7 @@ public class ArticleServiceImpl extends AbstractClient implements ArticleService
 
     @Override
     public Article getArticleById(int id){
-        String uri = baseUrl+ARTICLES+id;
+        String uri = baseUrl+urlArticles+id;
         return restTemplate.getForObject(uri,Article.class);
     }
 
@@ -126,7 +126,7 @@ public class ArticleServiceImpl extends AbstractClient implements ArticleService
     public boolean updateArticle(Article article) {
         boolean updated = false;
         String id = String.valueOf(article.getIdArticle());
-        String uri = baseUrl+ARTICLES+id;
+        String uri = baseUrl+urlArticles+id;
         HttpEntity<Article>entity = new HttpEntity<>(article);
 
         try {
@@ -148,7 +148,7 @@ public class ArticleServiceImpl extends AbstractClient implements ArticleService
     @Override
     public void delete(Article article) {
         String id = String.valueOf(article.getIdArticle());
-        String uri = baseUrl+ARTICLES+id;
+        String uri = baseUrl+urlArticles+id;
 
         HttpEntity<Article> entity = new HttpEntity<>(article);
         restTemplate.exchange(uri,HttpMethod.DELETE,entity,Article.class);

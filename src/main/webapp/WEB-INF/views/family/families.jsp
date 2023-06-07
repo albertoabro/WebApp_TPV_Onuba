@@ -26,8 +26,9 @@
                     </div>
                     <div class="card-footer">
                         <table>
+                            <caption> </caption>
                             <th></th>
-                            <caption></caption>
+
                             <td>
                                 <a class="btn btn-secondary mx-md-1" th:href="@{/families/editFamily(id=${family.idFamily})}">Editar</a>
                             </td>

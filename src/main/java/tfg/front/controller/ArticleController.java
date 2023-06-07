@@ -29,8 +29,8 @@ public class ArticleController {
     private final ArticleService articleService;
     private final FamilyService familyService;
     private final TraceabilityService traceabilityService;
-    private final String ARTICLES = "articles";
-    private final String VIEW_ARTICLES = "/article/articles";
+    private final static String sendArticles = "articles";
+    private final static String viewArticles = "/article/articles";
     public ArticleController(ArticleService articleService, FamilyService familyService, TraceabilityService traceabilityService) {
         this.articleService = articleService;
         this.familyService = familyService;
@@ -41,8 +41,8 @@ public class ArticleController {
     public ModelAndView getArticles() throws JsonProcessingException{
         articles=articleService.getArticles();
 
-        ModelAndView modelAndView = new ModelAndView(VIEW_ARTICLES);
-        modelAndView.addObject(ARTICLES, articles);
+        ModelAndView modelAndView = new ModelAndView(viewArticles);
+        modelAndView.addObject(sendArticles, articles);
 
         return modelAndView;
     }
@@ -86,10 +86,10 @@ public class ArticleController {
     public ModelAndView searchArticleByName(@RequestParam String nameArticle) throws JsonProcessingException{
 
         List<Article> searchArticle = articleService.searchArticleByName(nameArticle);
-        ModelAndView modelAndView = new ModelAndView(VIEW_ARTICLES);
+        ModelAndView modelAndView = new ModelAndView(viewArticles);
 
         if(!searchArticle.isEmpty())
-            modelAndView.addObject(ARTICLES,searchArticle);
+            modelAndView.addObject(sendArticles,searchArticle);
 
         return modelAndView;
     }
@@ -98,8 +98,8 @@ public class ArticleController {
     public ModelAndView articlesByFamily(HttpServletRequest request) throws JsonProcessingException {
         int idFamily = Integer.parseInt(request.getParameter("id"));
         List<Article> articleList = articleService.getArticlesByFamily(idFamily);
-        ModelAndView modelAndView = new ModelAndView(VIEW_ARTICLES);
-        modelAndView.addObject(ARTICLES, articleList);
+        ModelAndView modelAndView = new ModelAndView(viewArticles);
+        modelAndView.addObject(sendArticles, articleList);
 
         return modelAndView;
     }

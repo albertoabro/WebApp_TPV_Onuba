@@ -18,8 +18,8 @@
             <input type="hidden" readonly="readonly" th:field="*{numberBatch}">
             <input type="hidden" readonly="readonly" th:field="*{expirationDate}">
             <table>
+                <caption> </caption>
                 <th></th>
-                <caption></caption>
                 <tbody>
 
                 <tr th:each="product:${products}">

@@ -14,9 +14,6 @@ public class Ticket {
     double pay;
     double payBack;
 
-    public Ticket() {
-    }
-
     public int getIdAuto() {
         return idAuto;
     }

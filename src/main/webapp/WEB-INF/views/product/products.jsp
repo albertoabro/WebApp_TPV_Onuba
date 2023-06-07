@@ -27,8 +27,8 @@
                     </div>
                     <div class="card-footer">
                         <table>
+                            <caption> </caption>
                             <th></th>
-                            <caption></caption>
                             <td>
                                 <a class="btn btn-secondary mx-md-1" th:href="@{/products/editProduct(id=${product.idProduct})}">Editar</a>
                             </td>

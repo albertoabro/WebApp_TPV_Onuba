@@ -29,7 +29,7 @@ public class ProviderServiceImpl extends AbstractClient implements ProviderServi
     @Autowired
     public ProviderServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized) throws IOException {super(restTemplate, aSynchronized);}
 
-    private final String PROVIDERS = "/providers/";
+    private final static String urlProviders = "/providers/";
 
     private List<Provider> getProviders(ResponseEntity<List> response) throws JsonProcessingException{
         List<Provider> providers;
@@ -51,7 +51,7 @@ public class ProviderServiceImpl extends AbstractClient implements ProviderServi
 
     @Override
     public Provider getProviderById(int id) {
-        String uri = baseUrl+PROVIDERS+id;
+        String uri = baseUrl+urlProviders+id;
         return restTemplate.getForObject(uri, Provider.class);
     }
 
@@ -112,7 +112,7 @@ public class ProviderServiceImpl extends AbstractClient implements ProviderServi
     public boolean updateProvider(Provider provider){
         boolean updated = false;
         String id = String.valueOf(provider.getIdProvider());
-        String uri = baseUrl+PROVIDERS+id;
+        String uri = baseUrl+urlProviders+id;
         HttpEntity<Provider> entity = new HttpEntity<>(provider);
         try {
             ResponseEntity<Provider> response = restTemplate.exchange(uri, HttpMethod.PUT, entity, Provider.class);
@@ -133,7 +133,7 @@ public class ProviderServiceImpl extends AbstractClient implements ProviderServi
     @Override
     public void delete(Provider provider) {
         String id = String.valueOf(provider.getIdProvider());
-        String uri = baseUrl+PROVIDERS+id;
+        String uri = baseUrl+urlProviders+id;
 
         HttpEntity<Provider> entity = new HttpEntity<>(provider);
         restTemplate.exchange(uri,HttpMethod.DELETE,entity,Provider.class);

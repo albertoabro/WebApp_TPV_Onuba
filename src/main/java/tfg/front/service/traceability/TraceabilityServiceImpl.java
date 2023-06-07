@@ -31,7 +31,7 @@ public class TraceabilityServiceImpl extends AbstractClient implements Traceabil
         super(restTemplate, aSynchronized);
     }
 
-    private final String TRACEABILITIES = "/traceabilities";
+    private final static String urlTraceabilities = "/traceabilities";
 
     private List<Traceability> getTraceabilities(ResponseEntity<List> response) throws JsonProcessingException{
         List<Traceability> traceabilities;
@@ -46,7 +46,7 @@ public class TraceabilityServiceImpl extends AbstractClient implements Traceabil
     }
     @Override
     public List<Traceability> getTraceabilities() throws JsonProcessingException {
-        String uri = baseUrl+TRACEABILITIES;
+        String uri = baseUrl+urlTraceabilities;
         ResponseEntity<List> response = restTemplate.exchange(uri, HttpMethod.GET, null, List.class);
         return getTraceabilities(response);
     }
@@ -90,7 +90,7 @@ public class TraceabilityServiceImpl extends AbstractClient implements Traceabil
     @Override
     public Traceability createTraceability(TraceabilityToServer traceability) {
 
-        String uri = baseUrl+TRACEABILITIES;
+        String uri = baseUrl+urlTraceabilities;
         Traceability traceabilityFromServer;
         try{
             ResponseEntity<Traceability> response = restTemplate.postForEntity(uri, traceability, Traceability.class);

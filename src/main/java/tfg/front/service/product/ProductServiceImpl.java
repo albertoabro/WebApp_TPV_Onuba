@@ -32,7 +32,7 @@ public class ProductServiceImpl extends AbstractClient implements ProductService
         super(restTemplate, aSynchronized);
     }
     
-    private final String PRODUCTS = "/products/";
+    private final static String urlProducts = "/products/";
     private List<Product> getProducts(ResponseEntity<List>response) throws JsonProcessingException{
         List<Product> products;
         ObjectMapper mapper = new ObjectMapper();
@@ -63,7 +63,7 @@ public class ProductServiceImpl extends AbstractClient implements ProductService
     @Override
     public Product getProductById(int id){
 
-        String uri = baseUrl+PRODUCTS+id;
+        String uri = baseUrl+urlProducts+id;
         return restTemplate.getForObject(uri, Product.class);
     }
 
@@ -126,7 +126,7 @@ public class ProductServiceImpl extends AbstractClient implements ProductService
     public boolean updateProduct(Product product) {
         boolean updated=false;
         String id = String.valueOf(product.getIdProduct());
-        String uri = baseUrl+PRODUCTS+id;
+        String uri = baseUrl+urlProducts+id;
         HttpEntity<Product> entity = new HttpEntity<>(product);
         try {
             ResponseEntity<Product> response = restTemplate.exchange(uri, HttpMethod.PUT, entity, Product.class);
@@ -146,7 +146,7 @@ public class ProductServiceImpl extends AbstractClient implements ProductService
     @Override
     public boolean delete(Product product) {
         String id = String.valueOf(product.getIdProduct());
-        String uri = baseUrl+PRODUCTS+id;
+        String uri = baseUrl+urlProducts+id;
         boolean deleled = false;
 
         HttpEntity<Product> entity = new HttpEntity<>(product);

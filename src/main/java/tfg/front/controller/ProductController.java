@@ -28,8 +28,8 @@ public class ProductController {
     private final ProductService productService;
     private final ProviderService providerService;
     private final TraceabilityProductService traceabilityProductService;
-    private final String PRODUCTS = "products";
-    private final String VIEW_PRODUCTS = "/product/products";
+    private final static String sendProducts = "products";
+    private final static String viewProducts = "/product/products";
 
     public ProductController(ProductService productService, ProviderService providerService, TraceabilityProductService traceabilityProductService){
         this.productService=productService;
@@ -41,8 +41,8 @@ public class ProductController {
     public ModelAndView getProducts() throws JsonProcessingException{
         products = productService.getProducts();
 
-        ModelAndView modelAndView = new ModelAndView(VIEW_PRODUCTS);
-        modelAndView.addObject(PRODUCTS,products);
+        ModelAndView modelAndView = new ModelAndView(viewProducts);
+        modelAndView.addObject(sendProducts,products);
 
         return modelAndView;
     }
@@ -58,7 +58,7 @@ public class ProductController {
         if(searchProduct!=null)
         {
             modelAndView = new ModelAndView("/product/product");
-            modelAndView.addObject(PRODUCTS, searchProduct);
+            modelAndView.addObject(sendProducts, searchProduct);
             modelAndView.addObject("providers", providers);
         }
 
@@ -88,10 +88,10 @@ public class ProductController {
     @GetMapping("/searchProduct")
     public ModelAndView searchProductByName(@RequestParam String nameProduct) throws JsonProcessingException{
         List<Product> searchProducts = productService.searchProductByName(nameProduct);
-        ModelAndView modelAndView = new ModelAndView(VIEW_PRODUCTS);
+        ModelAndView modelAndView = new ModelAndView(viewProducts);
 
         if(!searchProducts.isEmpty())
-            modelAndView.addObject(PRODUCTS, searchProducts);
+            modelAndView.addObject(sendProducts, searchProducts);
 
         return modelAndView;
     }
@@ -105,7 +105,7 @@ public class ProductController {
         for(Integer id: idsProducts)
             productList.add(productService.getProductById(id));
 
-        modelAndView.addObject(PRODUCTS, productList);
+        modelAndView.addObject(sendProducts, productList);
         modelAndView.addObject("providers", providers);
 
         return modelAndView;
@@ -115,9 +115,9 @@ public class ProductController {
     public ModelAndView productsByProvider(HttpServletRequest request) throws JsonProcessingException {
         int provider = Integer.parseInt(request.getParameter("id"));
         List<Product> productList = productService.getProductsByProvider(provider);
-        ModelAndView modelAndView = new ModelAndView(VIEW_PRODUCTS);
+        ModelAndView modelAndView = new ModelAndView(viewProducts);
 
-        modelAndView.addObject(PRODUCTS,productList);
+        modelAndView.addObject(sendProducts,productList);
 
         return modelAndView;
     }

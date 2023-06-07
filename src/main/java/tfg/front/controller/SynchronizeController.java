@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import tfg.front.Synchronized;
 import tfg.front.domain.Terminal;
+import tfg.front.error.RestTemplateError;
 import tfg.front.service.terminal.TerminalService;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +67,7 @@ public class SynchronizeController {
 
             response.sendRedirect("/index");
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RestTemplateError(e.toString());
         }
     }
 }

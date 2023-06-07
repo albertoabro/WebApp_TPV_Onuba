@@ -35,7 +35,7 @@ public class UserServiceImpl extends AbstractClient implements UserService{
         super(restTemplate, aSynchronized);
     }
     
-    private final String USERS ="/users/";
+    private final static String urlUsers ="/users/";
 
     @Override
     public User login(LoginRequest loginRequest) {
@@ -80,7 +80,7 @@ public class UserServiceImpl extends AbstractClient implements UserService{
     @Override
     public User getEmployeeById(int id) {
         Assert.notNull(id,"El Id no puede ser nulo");
-        String uri = baseUrl+USERS+id;
+        String uri = baseUrl+urlUsers+id;
 
         return restTemplate.getForObject(uri, User.class);
     }
@@ -140,7 +140,7 @@ public class UserServiceImpl extends AbstractClient implements UserService{
     public boolean updateEmployee(User user) {
         boolean updated = false;
         String id = String.valueOf(user.getIdUser());
-        String uri = baseUrl+USERS+id;
+        String uri = baseUrl+urlUsers+id;
         HttpEntity<User> entity = new HttpEntity<>(user);
         try {
             ResponseEntity<User> response = restTemplate.exchange(uri,HttpMethod.PUT,entity,User.class);
@@ -161,7 +161,7 @@ public class UserServiceImpl extends AbstractClient implements UserService{
     @Override
     public void delete(User user) {
         String id = String.valueOf(user.getIdUser());
-        String uri = baseUrl+USERS+id;
+        String uri = baseUrl+urlUsers+id;
 
         HttpEntity<User> entity = new HttpEntity<>(user);
         restTemplate.exchange(uri, HttpMethod.DELETE,entity,User.class);

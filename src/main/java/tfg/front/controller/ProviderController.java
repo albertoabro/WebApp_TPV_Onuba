@@ -26,6 +26,7 @@ public class ProviderController {
     private final ProviderService providerService;
     private final ProductService productService;
     private final TraceabilityProductService traceabilityProductService;
+    private final static String sendProviders = "providers";
 
     public ProviderController(ProviderService providerService, ProductService productService, TraceabilityProductService traceabilityProductService) {
         this.providerService = providerService;
@@ -37,7 +38,7 @@ public class ProviderController {
     public ModelAndView getProviders() throws JsonProcessingException{
         providers=providerService.getProviders();
         ModelAndView modelAndView = new ModelAndView("/provider/providers");
-        modelAndView.addObject("providers", providers);
+        modelAndView.addObject(sendProviders, providers);
 
         return modelAndView;
     }
@@ -80,7 +81,7 @@ public class ProviderController {
         ModelAndView modelAndView = new ModelAndView("/provider/providers");
 
         if(!searchProviders.isEmpty())
-            modelAndView.addObject("providers",searchProviders);
+            modelAndView.addObject(sendProviders,searchProviders);
 
         return modelAndView;
     }
