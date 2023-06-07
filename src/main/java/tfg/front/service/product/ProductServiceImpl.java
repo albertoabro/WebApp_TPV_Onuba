@@ -18,7 +18,6 @@ import tfg.front.domain.Product;
 import tfg.front.domain.TraceabilityProduct;
 import tfg.front.service.AbstractClient;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +27,11 @@ import java.util.List;
 @Transactional
 public class ProductServiceImpl extends AbstractClient implements ProductService {
     @Autowired
-    protected ProductServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized) throws IOException {
+    protected ProductServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized){
         super(restTemplate, aSynchronized);
     }
     
-    private final static String urlProducts = "/products/";
+    private static final String PRODUCTS = "/products/";
     private List<Product> getProducts(ResponseEntity<List>response) throws JsonProcessingException{
         List<Product> products;
         ObjectMapper mapper = new ObjectMapper();
@@ -63,7 +62,7 @@ public class ProductServiceImpl extends AbstractClient implements ProductService
     @Override
     public Product getProductById(int id){
 
-        String uri = baseUrl+urlProducts+id;
+        String uri = baseUrl+PRODUCTS+id;
         return restTemplate.getForObject(uri, Product.class);
     }
 
@@ -126,7 +125,7 @@ public class ProductServiceImpl extends AbstractClient implements ProductService
     public boolean updateProduct(Product product) {
         boolean updated=false;
         String id = String.valueOf(product.getIdProduct());
-        String uri = baseUrl+urlProducts+id;
+        String uri = baseUrl+PRODUCTS+id;
         HttpEntity<Product> entity = new HttpEntity<>(product);
         try {
             ResponseEntity<Product> response = restTemplate.exchange(uri, HttpMethod.PUT, entity, Product.class);
@@ -146,7 +145,7 @@ public class ProductServiceImpl extends AbstractClient implements ProductService
     @Override
     public boolean delete(Product product) {
         String id = String.valueOf(product.getIdProduct());
-        String uri = baseUrl+urlProducts+id;
+        String uri = baseUrl+PRODUCTS+id;
         boolean deleled = false;
 
         HttpEntity<Product> entity = new HttpEntity<>(product);

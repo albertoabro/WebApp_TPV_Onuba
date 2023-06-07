@@ -17,7 +17,6 @@ import tfg.front.Synchronized;
 import tfg.front.domain.Family;
 import tfg.front.service.AbstractClient;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +26,11 @@ import java.util.List;
 @Transactional
 public class FamilyServiceImpl extends AbstractClient implements FamilyService {
     @Autowired
-    protected FamilyServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized) throws IOException {
+    protected FamilyServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized){
         super(restTemplate, aSynchronized);
     }
 
-    private final static String urlFamilies = "/families/";
+    private static final String FAMILIES = "/families/";
 
     private List<Family> getFamilies(ResponseEntity<List> response) throws JsonProcessingException{
         List<Family> families;
@@ -54,7 +53,7 @@ public class FamilyServiceImpl extends AbstractClient implements FamilyService {
 
     @Override
     public Family getFamilyById(int idFamily) {
-        String uri = baseUrl+urlFamilies+idFamily;
+        String uri = baseUrl+FAMILIES+idFamily;
         return  restTemplate.getForObject(uri,Family.class);
     }
 
@@ -140,7 +139,7 @@ public class FamilyServiceImpl extends AbstractClient implements FamilyService {
     public boolean updateFamily(Family family) {
         boolean updated = false;
         String id = String.valueOf(family.getIdFamily());
-        String uri = baseUrl+urlFamilies+id;
+        String uri = baseUrl+FAMILIES+id;
         HttpEntity<Family>entity = new HttpEntity<>(family);
 
         try {

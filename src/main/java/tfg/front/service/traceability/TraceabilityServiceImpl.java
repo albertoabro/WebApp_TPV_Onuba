@@ -17,7 +17,6 @@ import tfg.front.domain.Traceability;
 import tfg.front.domain.TraceabilityToServer;
 import tfg.front.service.AbstractClient;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +30,7 @@ public class TraceabilityServiceImpl extends AbstractClient implements Traceabil
         super(restTemplate, aSynchronized);
     }
 
-    private final static String urlTraceabilities = "/traceabilities";
+    private static final String TRACEABILITIES = "/traceabilities";
 
     private List<Traceability> getTraceabilities(ResponseEntity<List> response) throws JsonProcessingException{
         List<Traceability> traceabilities;
@@ -46,7 +45,7 @@ public class TraceabilityServiceImpl extends AbstractClient implements Traceabil
     }
     @Override
     public List<Traceability> getTraceabilities() throws JsonProcessingException {
-        String uri = baseUrl+urlTraceabilities;
+        String uri = baseUrl+TRACEABILITIES;
         ResponseEntity<List> response = restTemplate.exchange(uri, HttpMethod.GET, null, List.class);
         return getTraceabilities(response);
     }
@@ -90,7 +89,7 @@ public class TraceabilityServiceImpl extends AbstractClient implements Traceabil
     @Override
     public Traceability createTraceability(TraceabilityToServer traceability) {
 
-        String uri = baseUrl+urlTraceabilities;
+        String uri = baseUrl+TRACEABILITIES;
         Traceability traceabilityFromServer;
         try{
             ResponseEntity<Traceability> response = restTemplate.postForEntity(uri, traceability, Traceability.class);

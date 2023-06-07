@@ -12,7 +12,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import tfg.front.Synchronized;
@@ -20,7 +19,6 @@ import tfg.front.domain.User;
 import tfg.front.service.AbstractClient;
 import tfg.front.service.user.login.LoginRequest;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,11 +29,11 @@ import java.util.List;
 @Transactional
 public class UserServiceImpl extends AbstractClient implements UserService{
     @Autowired
-    public UserServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized) throws IOException {
+    public UserServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized){
         super(restTemplate, aSynchronized);
     }
     
-    private final static String urlUsers ="/users/";
+    private static final String USERS ="/users/";
 
     @Override
     public User login(LoginRequest loginRequest) {
@@ -79,8 +77,7 @@ public class UserServiceImpl extends AbstractClient implements UserService{
     }
     @Override
     public User getEmployeeById(int id) {
-        Assert.notNull(id,"El Id no puede ser nulo");
-        String uri = baseUrl+urlUsers+id;
+        String uri = baseUrl+USERS+id;
 
         return restTemplate.getForObject(uri, User.class);
     }
@@ -123,7 +120,7 @@ public class UserServiceImpl extends AbstractClient implements UserService{
             ResponseEntity<User> response = restTemplate.postForEntity(uri, user, User.class);
             if (response.getStatusCode().is2xxSuccessful()) {
                 created = true;
-                
+
                 String sql = "Insert into users values('" +user.getIdUser()+ "', '" +user.getUserName()+ "', '" +user.getPassword()+ "', " +
                         "'" +user.getAddress()+ "' ,'" +user.getPhone()+ "' ,'" +user.getTypeUser()+ "', '" +user.getPasswordTPV()+ "')";
 
@@ -140,7 +137,7 @@ public class UserServiceImpl extends AbstractClient implements UserService{
     public boolean updateEmployee(User user) {
         boolean updated = false;
         String id = String.valueOf(user.getIdUser());
-        String uri = baseUrl+urlUsers+id;
+        String uri = baseUrl+USERS+id;
         HttpEntity<User> entity = new HttpEntity<>(user);
         try {
             ResponseEntity<User> response = restTemplate.exchange(uri,HttpMethod.PUT,entity,User.class);
@@ -161,7 +158,7 @@ public class UserServiceImpl extends AbstractClient implements UserService{
     @Override
     public void delete(User user) {
         String id = String.valueOf(user.getIdUser());
-        String uri = baseUrl+urlUsers+id;
+        String uri = baseUrl+USERS+id;
 
         HttpEntity<User> entity = new HttpEntity<>(user);
         restTemplate.exchange(uri, HttpMethod.DELETE,entity,User.class);

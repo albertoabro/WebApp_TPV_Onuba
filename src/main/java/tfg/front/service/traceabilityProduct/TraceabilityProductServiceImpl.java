@@ -32,7 +32,7 @@ public class TraceabilityProductServiceImpl extends AbstractClient implements Tr
 
     private final TraceabilityService traceabilityService;
     private final ProductService productService;
-    private final static String urlTraceability = "/traceabilityProducts";
+    private static final String TRACEABILITY = "/traceabilityProducts";
 
     @Autowired
     protected TraceabilityProductServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized, ProductService productService, TraceabilityService traceabilityService){
@@ -62,7 +62,7 @@ public class TraceabilityProductServiceImpl extends AbstractClient implements Tr
 
     @Override
     public List<TraceabilityProduct> getTraceabilityProducts() throws JsonProcessingException {
-        String uri = baseUrl+ urlTraceability;
+        String uri = baseUrl+ TRACEABILITY;
         ResponseEntity<List> response = restTemplate.exchange(uri, HttpMethod.GET, null, List.class);
 
         return getTraceabilityProducts(response);
@@ -71,7 +71,7 @@ public class TraceabilityProductServiceImpl extends AbstractClient implements Tr
     @Override
     public boolean create(TraceabilityToServer traceability, Product product) {
         boolean created = false;
-        String uri = baseUrl+ urlTraceability;
+        String uri = baseUrl+ TRACEABILITY;
 
         try {
 
