@@ -19,8 +19,9 @@ public class Security{
     }
 
     private String readToken() throws IOException{
-        DataInputStream reader = new DataInputStream(new FileInputStream(path));
-        return reader.readUTF();
+        try(DataInputStream reader = new DataInputStream(new FileInputStream(path))){
+            return reader.readUTF();
+        }
      }
 
     private String getToken() throws IOException {
