@@ -26,9 +26,6 @@ public class Provider {
     @Size(max = 50,message = "{Size.Provider.description}")
     String productDescription;
 
-    public Provider() {
-    }
-
     public int getIdProvider() {
         return idProvider;
     }

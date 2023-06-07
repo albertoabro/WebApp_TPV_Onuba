@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+      lang="es">
 <head>
     <meta charset="UTF-8">
     <script type="text/javascript" src="//code.jquery.com/jquery-1.6.2.js"></script>
@@ -16,6 +15,7 @@
         <div class="col-sm-8">
             <form action="/synchronize/synchronize" method="post" >
                 <table class="table">
+                    <caption>TERMINALES</caption>
                     <thead>
                     <tr>
                         <th>NOMBRE</th>

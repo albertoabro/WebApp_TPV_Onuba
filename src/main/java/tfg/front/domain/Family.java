@@ -18,8 +18,6 @@ public class Family {
     @Size(max = 50, message = "{Size.Family.name}")
     String nameFamily;
 
-    public Family() {}
-
     public int getIdFamily() {
         return idFamily;
     }

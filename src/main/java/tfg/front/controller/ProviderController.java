@@ -67,7 +67,7 @@ public class ProviderController {
 
 
     @GetMapping("/editProvider")
-    public ModelAndView viewEditProvider(HttpServletRequest request) throws JsonProcessingException {
+    public ModelAndView viewEditProvider(HttpServletRequest request){
         int id = Integer.parseInt(request.getParameter("id"));
         Provider provider = providerService.getProviderById(id);
 
@@ -114,7 +114,6 @@ public class ProviderController {
     @DeleteMapping("/delete")
     public ModelAndView delete(@RequestParam int idProvider) throws JsonProcessingException {
         Provider provider = providerService.getProviderById(idProvider);
-        String msg = "Error: el proveedor no existe";
 
         if(provider==null)
             return getProviders();

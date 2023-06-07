@@ -28,6 +28,9 @@ import java.util.List;
 public class ProviderServiceImpl extends AbstractClient implements ProviderService{
     @Autowired
     public ProviderServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized) throws IOException {super(restTemplate, aSynchronized);}
+
+    private final String PROVIDERS = "/providers/";
+
     private List<Provider> getProviders(ResponseEntity<List> response) throws JsonProcessingException{
         List<Provider> providers;
         ObjectMapper mapper = new ObjectMapper();
@@ -48,10 +51,8 @@ public class ProviderServiceImpl extends AbstractClient implements ProviderServi
 
     @Override
     public Provider getProviderById(int id) {
-        String uri = baseUrl+"/providers/"+id;
-        Provider provider = restTemplate.getForObject(uri, Provider.class);
-
-        return provider;
+        String uri = baseUrl+PROVIDERS+id;
+        return restTemplate.getForObject(uri, Provider.class);
     }
 
     @Override
@@ -61,8 +62,8 @@ public class ProviderServiceImpl extends AbstractClient implements ProviderServi
     @Override
     public int searchPosition(List<Provider> providers, int id){
         boolean found = false;
-        int counter = 0, pos =-1;
-        Provider searchProvider;
+        int counter = 0;
+        int pos =-1;
 
         while (counter<providers.size() && !found)
         {
@@ -111,7 +112,7 @@ public class ProviderServiceImpl extends AbstractClient implements ProviderServi
     public boolean updateProvider(Provider provider){
         boolean updated = false;
         String id = String.valueOf(provider.getIdProvider());
-        String uri = baseUrl+"/providers/"+id;
+        String uri = baseUrl+PROVIDERS+id;
         HttpEntity<Provider> entity = new HttpEntity<>(provider);
         try {
             ResponseEntity<Provider> response = restTemplate.exchange(uri, HttpMethod.PUT, entity, Provider.class);
@@ -132,7 +133,7 @@ public class ProviderServiceImpl extends AbstractClient implements ProviderServi
     @Override
     public void delete(Provider provider) {
         String id = String.valueOf(provider.getIdProvider());
-        String uri = baseUrl+"/providers/"+id;
+        String uri = baseUrl+PROVIDERS+id;
 
         HttpEntity<Provider> entity = new HttpEntity<>(provider);
         restTemplate.exchange(uri,HttpMethod.DELETE,entity,Provider.class);

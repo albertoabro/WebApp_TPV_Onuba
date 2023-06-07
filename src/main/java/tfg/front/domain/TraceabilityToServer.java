@@ -20,9 +20,6 @@ public class TraceabilityToServer {
     @NotNull(message = "{Null.Traceability.date}")
     Date expirationDate;
 
-    public TraceabilityToServer() {
-    }
-
     public int getIdTraceability() {
         return idTraceability;
     }

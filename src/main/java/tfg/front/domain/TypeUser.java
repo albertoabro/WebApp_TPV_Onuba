@@ -20,9 +20,6 @@ public class TypeUser {
         this.rol = rol;
     }
 
-    public TypeUser() {
-    }
-
     public int getId() {
         return idTypeUser;
     }

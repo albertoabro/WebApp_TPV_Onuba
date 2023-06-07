@@ -24,7 +24,6 @@ public class AppContext implements RepositoryRestConfigurer {
     }
     @Bean
     Synchronized aSynchronized() throws IOException {
-        Synchronized synchronize = new Synchronized();
-        return synchronize;
+        return new Synchronized();
     }
 }

@@ -11,7 +11,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import tfg.front.Synchronized;
@@ -32,7 +31,8 @@ public class ProductServiceImpl extends AbstractClient implements ProductService
     protected ProductServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized) throws IOException {
         super(restTemplate, aSynchronized);
     }
-
+    
+    private final String PRODUCTS = "/products/";
     private List<Product> getProducts(ResponseEntity<List>response) throws JsonProcessingException{
         List<Product> products;
         ObjectMapper mapper = new ObjectMapper();
@@ -63,10 +63,8 @@ public class ProductServiceImpl extends AbstractClient implements ProductService
     @Override
     public Product getProductById(int id){
 
-        String uri = baseUrl+"/products/"+id;
-        Product product = restTemplate.getForObject(uri, Product.class);
-
-        return product;
+        String uri = baseUrl+PRODUCTS+id;
+        return restTemplate.getForObject(uri, Product.class);
     }
 
     @Override
@@ -77,7 +75,8 @@ public class ProductServiceImpl extends AbstractClient implements ProductService
     @Override
     public int searchPosition(List<Product> products, int id) {
         boolean found = false;
-        int counter = 0, pos=-1;
+        int counter = 0;
+        int pos=-1;
 
         while (counter<products.size() && !found)
         {
@@ -127,7 +126,7 @@ public class ProductServiceImpl extends AbstractClient implements ProductService
     public boolean updateProduct(Product product) {
         boolean updated=false;
         String id = String.valueOf(product.getIdProduct());
-        String uri = baseUrl+"/products/"+id;
+        String uri = baseUrl+PRODUCTS+id;
         HttpEntity<Product> entity = new HttpEntity<>(product);
         try {
             ResponseEntity<Product> response = restTemplate.exchange(uri, HttpMethod.PUT, entity, Product.class);
@@ -147,7 +146,7 @@ public class ProductServiceImpl extends AbstractClient implements ProductService
     @Override
     public boolean delete(Product product) {
         String id = String.valueOf(product.getIdProduct());
-        String uri = baseUrl+"/products/"+id;
+        String uri = baseUrl+PRODUCTS+id;
         boolean deleled = false;
 
         HttpEntity<Product> entity = new HttpEntity<>(product);

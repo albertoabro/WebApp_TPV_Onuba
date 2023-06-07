@@ -34,6 +34,8 @@ public class UserServiceImpl extends AbstractClient implements UserService{
     public UserServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized) throws IOException {
         super(restTemplate, aSynchronized);
     }
+    
+    private final String USERS ="/users/";
 
     @Override
     public User login(LoginRequest loginRequest) {
@@ -62,8 +64,7 @@ public class UserServiceImpl extends AbstractClient implements UserService{
 
     @Override
     public User create() {
-        User user = new User();
-        return user;
+        return new User();
     }
 
     private List<User> getUsers(ResponseEntity<List> response) throws JsonProcessingException {
@@ -79,17 +80,16 @@ public class UserServiceImpl extends AbstractClient implements UserService{
     @Override
     public User getEmployeeById(int id) {
         Assert.notNull(id,"El Id no puede ser nulo");
-        String uri = baseUrl+"/users/"+id;
+        String uri = baseUrl+USERS+id;
 
-        User user = restTemplate.getForObject(uri, User.class);
-
-        return user;
+        return restTemplate.getForObject(uri, User.class);
     }
 
     @Override
     public int searchPosition(List<User> employees,int id) {
         boolean found = false;
-        int counter=0, pos=-1;
+        int counter=0;
+        int pos=-1;
 
         while (counter<employees.size() && !found){
             if(employees.get(counter).getIdUser()==id)
@@ -140,7 +140,7 @@ public class UserServiceImpl extends AbstractClient implements UserService{
     public boolean updateEmployee(User user) {
         boolean updated = false;
         String id = String.valueOf(user.getIdUser());
-        String uri = baseUrl+"/users/"+id;
+        String uri = baseUrl+USERS+id;
         HttpEntity<User> entity = new HttpEntity<>(user);
         try {
             ResponseEntity<User> response = restTemplate.exchange(uri,HttpMethod.PUT,entity,User.class);
@@ -161,7 +161,7 @@ public class UserServiceImpl extends AbstractClient implements UserService{
     @Override
     public void delete(User user) {
         String id = String.valueOf(user.getIdUser());
-        String uri = baseUrl+"/users/"+id;
+        String uri = baseUrl+USERS+id;
 
         HttpEntity<User> entity = new HttpEntity<>(user);
         restTemplate.exchange(uri, HttpMethod.DELETE,entity,User.class);

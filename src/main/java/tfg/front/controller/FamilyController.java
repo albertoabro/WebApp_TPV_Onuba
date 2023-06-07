@@ -63,7 +63,7 @@ public class FamilyController {
     }
 
     @GetMapping("/editFamily")
-    public ModelAndView viewEditFamily(HttpServletRequest request) throws JsonProcessingException{
+    public ModelAndView viewEditFamily(HttpServletRequest request){
         int id = Integer.parseInt(request.getParameter("id"));
         Family family = familyService.getFamilyById(id);
 

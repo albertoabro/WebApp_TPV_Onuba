@@ -20,9 +20,6 @@ public class Traceability {
     @NotNull(message = "{Null.Traceability.date}")
     String expirationDate;
 
-    public Traceability() {
-    }
-
     public int getIdTraceability() {
         return idTraceability;
     }

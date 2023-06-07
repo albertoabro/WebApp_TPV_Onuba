@@ -27,9 +27,6 @@ public class Product {
     @NotNull(message = "{Null.Product.stock}")
     int stock;
 
-
-    public Product() {}
-
     public int getIdProduct() {
         return idProduct;
     }

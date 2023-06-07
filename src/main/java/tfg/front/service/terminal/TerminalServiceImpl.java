@@ -40,7 +40,7 @@ public class TerminalServiceImpl extends AbstractClient implements TerminalServi
     public List<Terminal> getTerminals() throws JsonProcessingException {
         String uri = baseUrl+"/terminals";
 
-        ResponseEntity response = restTemplate.exchange(uri, HttpMethod.GET,null, List.class);
+        ResponseEntity<List> response = restTemplate.exchange(uri, HttpMethod.GET,null, List.class);
 
         return getTerminals(response);
     }

@@ -27,9 +27,11 @@ import java.util.List;
 @Transactional
 public class TraceabilityServiceImpl extends AbstractClient implements TraceabilityService{
     @Autowired
-    protected TraceabilityServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized) throws IOException {
+    protected TraceabilityServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized) {
         super(restTemplate, aSynchronized);
     }
+
+    private final String TRACEABILITIES = "/traceabilities";
 
     private List<Traceability> getTraceabilities(ResponseEntity<List> response) throws JsonProcessingException{
         List<Traceability> traceabilities;
@@ -44,7 +46,7 @@ public class TraceabilityServiceImpl extends AbstractClient implements Traceabil
     }
     @Override
     public List<Traceability> getTraceabilities() throws JsonProcessingException {
-        String uri = baseUrl+"/traceabilities";
+        String uri = baseUrl+TRACEABILITIES;
         ResponseEntity<List> response = restTemplate.exchange(uri, HttpMethod.GET, null, List.class);
         return getTraceabilities(response);
     }
@@ -52,17 +54,13 @@ public class TraceabilityServiceImpl extends AbstractClient implements Traceabil
     @Override
     public Traceability getTraceabilityById(int id) {
         String uri = baseUrl+"/traceabilities/"+id;
-        Traceability traceability = restTemplate.getForObject(uri, Traceability.class);
-
-        return traceability;
+        return restTemplate.getForObject(uri, Traceability.class);
     }
 
     @Override
     public Traceability getTraceabilityByNumberBatch(int numberBatch) {
         String uri = baseUrl+"/traceabilities/search/"+numberBatch;
-        Traceability traceability = restTemplate.getForObject(uri,Traceability.class);
-
-        return traceability;
+        return restTemplate.getForObject(uri,Traceability.class);
     }
 
     @Override
@@ -73,7 +71,8 @@ public class TraceabilityServiceImpl extends AbstractClient implements Traceabil
     @Override
     public int searchPosition(List<Traceability> traceabilities, int id) {
         boolean found = false;
-        int counter = 0, pos = -1;
+        int counter = 0;
+        int pos = -1;
 
         while (counter<traceabilities.size() && !found)
         {
@@ -91,7 +90,7 @@ public class TraceabilityServiceImpl extends AbstractClient implements Traceabil
     @Override
     public Traceability createTraceability(TraceabilityToServer traceability) {
 
-        String uri = baseUrl+"/traceabilities";
+        String uri = baseUrl+TRACEABILITIES;
         Traceability traceabilityFromServer;
         try{
             ResponseEntity<Traceability> response = restTemplate.postForEntity(uri, traceability, Traceability.class);

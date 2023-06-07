@@ -1,10 +1,10 @@
 package tfg.front;
 
-import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.*;
 import lombok.extern.slf4j.Slf4j;
+import tfg.front.error.RestTemplateError;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -15,6 +15,7 @@ import java.util.List;
 public class Synchronized{
     String dirPc ="C:\\Users\\alber\\Desktop";
     String dirPortatil = "D:\\Alberto\\Desktop";
+    String path = "/download/";
 
     protected static final DbxRequestConfig config = DbxRequestConfig.newBuilder("dropbox/ServerToTpv1").build();
     protected DbxClientV2 client;
@@ -28,21 +29,22 @@ public class Synchronized{
     private File createAndWrite() throws IOException {
 
         File dataBase;
-        dataBase = new File(dirPc+"sql.txt");
-        dataBase.createNewFile();
-        BufferedWriter writer = new BufferedWriter(new FileWriter(dataBase));
+        dataBase = new File("sql.txt");
+        if(dataBase.createNewFile()) {
 
-        for (String sql: sqlCommands) {
-            writer.write(sql);
-            writer.newLine();
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(dataBase))) {
+
+                for (String sql : sqlCommands) {
+                    writer.write(sql);
+                    writer.newLine();
+                }
+            }
         }
-        writer.close();
 
         return dataBase;
     }
 
-    public boolean syncWithDropBox()  {
-        boolean sync = false;
+    public void syncWithDropBox()  {
 
         try {
             File dataBase = createAndWrite();
@@ -56,23 +58,16 @@ public class Synchronized{
 
             stream.close();
             sqlCommands.clear();
-            dataBase.delete();
+            dataBase.deleteOnExit();
 
-            sync = true;
-        } catch (DbxException e){
+        } catch (Exception e){
             e.printStackTrace();
         }
-        catch (IOException e){
-            e.printStackTrace();
-        }
-
-        return sync;
     }
 
-    public void syncDropboxWithServer() throws FileNotFoundException {
+    public void syncDropboxWithServer(){
 
         try {
-            String path = "/download/";
 
             ListFolderResult files = client.files().listFolderBuilder(path).withRecursive(true).start();
             int i = 1;
@@ -90,10 +85,8 @@ public class Synchronized{
                         i++;
                     }
                 }
-        } catch (DbxException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new RestTemplateError(e.getMessage());
         }
     }
 

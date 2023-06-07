@@ -89,9 +89,8 @@ public class UserController {
     @GetMapping("/registerEmployee")
     public ModelAndView registerEmployee() throws JsonProcessingException {
         final User user = userService.create();
-        ModelAndView modelAndView = createEdit(user, false);
 
-        return modelAndView;
+        return createEdit(user, false);
     }
 
     @GetMapping("/editEmployee")

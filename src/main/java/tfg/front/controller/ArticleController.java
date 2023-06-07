@@ -21,13 +21,16 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/articles")
+
+
 public class ArticleController {
     private List<Article> articles  = new ArrayList<>();
     private List<Family> families = new ArrayList<>();
     private final ArticleService articleService;
     private final FamilyService familyService;
     private final TraceabilityService traceabilityService;
-
+    private final String ARTICLES = "articles";
+    private final String VIEW_ARTICLES = "/article/articles";
     public ArticleController(ArticleService articleService, FamilyService familyService, TraceabilityService traceabilityService) {
         this.articleService = articleService;
         this.familyService = familyService;
@@ -38,8 +41,8 @@ public class ArticleController {
     public ModelAndView getArticles() throws JsonProcessingException{
         articles=articleService.getArticles();
 
-        ModelAndView modelAndView = new ModelAndView("/article/articles");
-        modelAndView.addObject("articles", articles);
+        ModelAndView modelAndView = new ModelAndView(VIEW_ARTICLES);
+        modelAndView.addObject(ARTICLES, articles);
 
         return modelAndView;
     }
@@ -83,10 +86,10 @@ public class ArticleController {
     public ModelAndView searchArticleByName(@RequestParam String nameArticle) throws JsonProcessingException{
 
         List<Article> searchArticle = articleService.searchArticleByName(nameArticle);
-        ModelAndView modelAndView = new ModelAndView("/article/articles");
+        ModelAndView modelAndView = new ModelAndView(VIEW_ARTICLES);
 
         if(!searchArticle.isEmpty())
-            modelAndView.addObject("articles",searchArticle);
+            modelAndView.addObject(ARTICLES,searchArticle);
 
         return modelAndView;
     }
@@ -95,8 +98,8 @@ public class ArticleController {
     public ModelAndView articlesByFamily(HttpServletRequest request) throws JsonProcessingException {
         int idFamily = Integer.parseInt(request.getParameter("id"));
         List<Article> articleList = articleService.getArticlesByFamily(idFamily);
-        ModelAndView modelAndView = new ModelAndView("/article/articles");
-        modelAndView.addObject("articles", articleList);
+        ModelAndView modelAndView = new ModelAndView(VIEW_ARTICLES);
+        modelAndView.addObject(ARTICLES, articleList);
 
         return modelAndView;
     }
@@ -131,7 +134,6 @@ public class ArticleController {
     @DeleteMapping("/delete")
     public ModelAndView delete(@RequestParam int idArticle) throws JsonProcessingException {
         Article article = articleService.getArticleById(idArticle);
-        String msg = "Error: El artículo no existe";
 
         if(article==null)
             return getArticles();
@@ -170,6 +172,7 @@ public class ArticleController {
         }
         modelAndView.addObject("families",families);
         modelAndView.addObject("article",article);
+        modelAndView.addObject("error",message);
 
         return modelAndView;
     }

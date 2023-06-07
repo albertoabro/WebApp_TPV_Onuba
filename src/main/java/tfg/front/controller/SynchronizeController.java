@@ -23,7 +23,7 @@ public class SynchronizeController {
 
     List<Terminal> terminals = new ArrayList<>();
 
-    public SynchronizeController(TerminalService terminalService) throws IOException {
+    public SynchronizeController(TerminalService terminalService){
         this.terminalService = terminalService;
     }
 
@@ -56,8 +56,7 @@ public class SynchronizeController {
 
     @GetMapping("/tickets")
     public ModelAndView getTickets(){
-        ModelAndView modelAndView = new ModelAndView("/synchronize/tickets");
-        return modelAndView;
+        return new ModelAndView("/synchronize/tickets");
     }
 
     @PostMapping("/download")
@@ -67,9 +66,7 @@ public class SynchronizeController {
             sync.syncDropboxWithServer();
 
             response.sendRedirect("/index");
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

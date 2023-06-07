@@ -35,15 +35,13 @@ public class TypeUserServiceImpl extends AbstractClient implements TypeUserServi
         ResponseEntity<List> response =
                 restTemplate.exchange(uri, HttpMethod.GET, null, List.class);
 
-        List<TypeUser> typeUsers = new ArrayList<>();
-
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(response.getBody());
 
         Gson gson = new Gson();
         Type typeTypeUserList = new TypeToken<ArrayList<TypeUser>>(){}.getType();
 
-        typeUsers = gson.fromJson(json,typeTypeUserList);
+        List<TypeUser>typeUsers = gson.fromJson(json,typeTypeUserList);
 
         return typeUsers;
     }

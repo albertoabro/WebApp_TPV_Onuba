@@ -10,7 +10,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import tfg.front.Synchronized;
@@ -22,7 +21,6 @@ import tfg.front.service.AbstractClient;
 import tfg.front.service.product.ProductService;
 import tfg.front.service.traceability.TraceabilityService;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,9 +32,10 @@ public class TraceabilityProductServiceImpl extends AbstractClient implements Tr
 
     private final TraceabilityService traceabilityService;
     private final ProductService productService;
+    private final String TRACEABILITY = "/traceabilityProducts";
 
     @Autowired
-    protected TraceabilityProductServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized, ProductService productService, TraceabilityService traceabilityService) throws IOException {
+    protected TraceabilityProductServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized, ProductService productService, TraceabilityService traceabilityService){
         super(restTemplate, aSynchronized);
         this.productService = productService;
         this.traceabilityService = traceabilityService;
@@ -63,7 +62,7 @@ public class TraceabilityProductServiceImpl extends AbstractClient implements Tr
 
     @Override
     public List<TraceabilityProduct> getTraceabilityProducts() throws JsonProcessingException {
-        String uri = baseUrl+"/traceabilityProducts";
+        String uri = baseUrl+ TRACEABILITY;
         ResponseEntity<List> response = restTemplate.exchange(uri, HttpMethod.GET, null, List.class);
 
         return getTraceabilityProducts(response);
@@ -72,7 +71,7 @@ public class TraceabilityProductServiceImpl extends AbstractClient implements Tr
     @Override
     public boolean create(TraceabilityToServer traceability, Product product) {
         boolean created = false;
-        String uri = baseUrl+"/traceabilityProducts";
+        String uri = baseUrl+ TRACEABILITY;
 
         try {
 

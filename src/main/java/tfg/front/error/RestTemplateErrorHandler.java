@@ -18,10 +18,7 @@ public class RestTemplateErrorHandler implements ResponseErrorHandler {
 
     @Override
     public void handleError(ClientHttpResponse response) throws IOException {
-        if(response.getStatusCode().is4xxClientError()){
-            if(response.getStatusCode()== HttpStatus.NOT_FOUND){
-                throw new RestTemplateError(HttpStatus.NOT_FOUND, "Usuario no encontrado");
-            }
-        }
+        if(response.getStatusCode().is4xxClientError() && response.getStatusCode()== HttpStatus.NOT_FOUND)
+            throw new RestTemplateError("Usuario no encontrado");
     }
 }

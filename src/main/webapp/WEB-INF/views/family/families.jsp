@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+      lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Tpv Onuba</title>
@@ -27,6 +26,8 @@
                     </div>
                     <div class="card-footer">
                         <table>
+                            <th></th>
+                            <caption></caption>
                             <td>
                                 <a class="btn btn-secondary mx-md-1" th:href="@{/families/editFamily(id=${family.idFamily})}">Editar</a>
                             </td>

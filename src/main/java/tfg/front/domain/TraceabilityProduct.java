@@ -13,15 +13,6 @@ public class TraceabilityProduct {
     int idTraceability;
     int idProduct;
 
-    public TraceabilityProduct() {
-    }
-
-    public TraceabilityProduct(int idAuto, int idTraceability, int idProduct) {
-        this.idAuto = idAuto;
-        this.idTraceability = idTraceability;
-        this.idProduct = idProduct;
-    }
-
     public int getIdAuto() {
         return idAuto;
     }

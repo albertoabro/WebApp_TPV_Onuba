@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
 xmlns:th="http://www.thymeleaf.org"
-xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
-xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+      lang="es">
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -48,7 +47,8 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <footer class="bg-light text-center text-lg-start">
     <div class="p-3" style="background-color: rgba(0, 0, 0, 0.2);">
         <table class="table table-borderless">
-
+            <caption></caption>
+            <th></th>
             <td class="text-start">
                 © 2023 Copyright: Alberto Abad Rodríguez
             </td>

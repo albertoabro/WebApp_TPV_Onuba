@@ -29,8 +29,6 @@ public class User {
     @Pattern(regexp = "^\\d{0,4}$", message ="{Size.User.passTPV}")
     String passwordTPV;
 
-    public User() {}
-
     public int getIdUser() {
         return idUser;
     }

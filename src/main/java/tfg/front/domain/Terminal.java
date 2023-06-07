@@ -15,9 +15,6 @@ public class Terminal {
     String ipv4;
     String ipv6;
 
-    public Terminal() {
-    }
-
     public int getIdterminal() {
         return idterminal;
     }

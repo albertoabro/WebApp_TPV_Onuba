@@ -30,6 +30,8 @@ public class ArticleServiceImpl extends AbstractClient implements ArticleService
     protected ArticleServiceImpl(RestTemplate restTemplate, Synchronized aSynchronized) throws IOException {
         super(restTemplate, aSynchronized);
     }
+    
+    private final String ARTICLES = "/articles/";
 
     private List<Article> getArticles(ResponseEntity<List> response) throws JsonProcessingException{
         List<Article> articles;
@@ -46,7 +48,6 @@ public class ArticleServiceImpl extends AbstractClient implements ArticleService
         String uri = baseUrl+"/articles";
         ResponseEntity<List> response = restTemplate.exchange(uri, HttpMethod.GET, null, List.class); //guarda en un objeto de tipo List la lista recibida por la Api en formato Json
 
-
         return getArticles(response);
     }
 
@@ -60,10 +61,8 @@ public class ArticleServiceImpl extends AbstractClient implements ArticleService
 
     @Override
     public Article getArticleById(int id){
-        String uri = baseUrl+"/articles/"+id;
-        Article article = restTemplate.getForObject(uri,Article.class);
-
-        return article;
+        String uri = baseUrl+ARTICLES+id;
+        return restTemplate.getForObject(uri,Article.class);
     }
 
     @Override
@@ -74,7 +73,8 @@ public class ArticleServiceImpl extends AbstractClient implements ArticleService
     @Override
     public int searchPosition(List<Article> articles, int id) {
         boolean found = false;
-        int counter = 0, pos = -1;
+        int counter = 0;
+        int pos = -1;
 
         while (counter<articles.size() && !found)
         {
@@ -126,7 +126,7 @@ public class ArticleServiceImpl extends AbstractClient implements ArticleService
     public boolean updateArticle(Article article) {
         boolean updated = false;
         String id = String.valueOf(article.getIdArticle());
-        String uri = baseUrl+"/articles/"+id;
+        String uri = baseUrl+ARTICLES+id;
         HttpEntity<Article>entity = new HttpEntity<>(article);
 
         try {
@@ -148,7 +148,7 @@ public class ArticleServiceImpl extends AbstractClient implements ArticleService
     @Override
     public void delete(Article article) {
         String id = String.valueOf(article.getIdArticle());
-        String uri = baseUrl+"/articles/"+id;
+        String uri = baseUrl+ARTICLES+id;
 
         HttpEntity<Article> entity = new HttpEntity<>(article);
         restTemplate.exchange(uri,HttpMethod.DELETE,entity,Article.class);

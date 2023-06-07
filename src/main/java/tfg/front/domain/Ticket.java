@@ -17,19 +17,6 @@ public class Ticket {
     public Ticket() {
     }
 
-    public Ticket(int idAuto, int idTicket, String employee, Date dateBuy, int idArticle, int unit, int idTypePay, double amount, double pay, double payBack) {
-        this.idAuto = idAuto;
-        this.idTicket = idTicket;
-        this.employee = employee;
-        this.dateBuy = dateBuy;
-        this.idArticle = idArticle;
-        this.unit = unit;
-        this.idTypePay = idTypePay;
-        this.amount = amount;
-        this.pay = pay;
-        this.payBack = payBack;
-    }
-
     public int getIdAuto() {
         return idAuto;
     }
