@@ -10,9 +10,11 @@ public class Security {
 
     static Security security;
     String token;
+    boolean exist;
     public Security() throws IOException {
         super();
         token = getToken();
+        exist = searchFile();
     }
 
     private String getToken() throws IOException {
@@ -35,5 +37,9 @@ public class Security {
         if(security == null)
             security = new Security();
         return security;
+    }
+
+    private boolean searchFile(){
+       return false;
     }
 }

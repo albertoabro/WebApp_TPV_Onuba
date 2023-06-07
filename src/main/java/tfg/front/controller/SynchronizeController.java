@@ -65,6 +65,7 @@ public class SynchronizeController {
         Synchronized sync = terminalService.getObject();
         try {
             sync.syncDropboxWithServer();
+
             response.sendRedirect("/index");
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);

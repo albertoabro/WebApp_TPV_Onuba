@@ -3,9 +3,7 @@ package tfg.front;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.v2.DbxClientV2;
-import com.dropbox.core.v2.files.DownloadBuilder;
-import com.dropbox.core.v2.files.UploadBuilder;
-import com.dropbox.core.v2.files.WriteMode;
+import com.dropbox.core.v2.files.*;
 import com.dropbox.core.v2.users.FullAccount;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,8 +16,8 @@ import java.util.List;
 
 @Slf4j
 public class Synchronized{
-    String dirPc ="C:\\Users\\alber\\Desktop\\Estudios\\Universidad\\TFG\\Front\\src\\main\\java\\tfg\\front\\";
-    String dirPortatil = "D:\\Alberto\\Estudios\\Universidad\\Cuarto\\TFG\\Front\\";
+    String dirPc ="C:\\Users\\alber\\Desktop";
+    String dirPortatil = "D:\\Alberto\\Desktop";
 
     protected static final DbxRequestConfig config = DbxRequestConfig.newBuilder("dropbox/ServerToTpv1").build();
     protected DbxClientV2 client;
@@ -82,22 +80,32 @@ public class Synchronized{
         return sync;
     }
 
-    public boolean syncDropboxWithServer() throws FileNotFoundException {
-        boolean sync;
+    public void syncDropboxWithServer() throws FileNotFoundException {
+
         try {
-            String path = "/download/sales.txt";
-            OutputStream stream = new FileOutputStream(dirPc+"sales.txt");
-            DownloadBuilder builder = client.files().downloadBuilder(path);
-            builder.download(stream);
-            client.files().deleteV2(path);
-            stream.close();
-            sync = true;
+            String path = "/download/";
+
+            ListFolderResult files = client.files().listFolderBuilder(path).withRecursive(true).start();
+            int i = 1;
+
+                for(Metadata metadata : files.getEntries())
+                {
+                    if(!metadata.getName().equals("download"))
+                    {
+                        path = metadata.getPathDisplay();
+                        DownloadBuilder builder = client.files().downloadBuilder(path);
+                        OutputStream stream = new FileOutputStream(dirPc+"sales"+i+".txt");
+                        builder.download(stream);
+                        client.files().deleteV2(path);
+                        stream.close();
+                        i++;
+                    }
+                }
         } catch (DbxException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return sync;
     }
 
 }

@@ -81,6 +81,7 @@ public class ArticleController {
 
     @GetMapping("/searchArticle")
     public ModelAndView searchArticleByName(@RequestParam String nameArticle) throws JsonProcessingException{
+
         List<Article> searchArticle = articleService.searchArticleByName(nameArticle);
         ModelAndView modelAndView = new ModelAndView("/article/articles");
 

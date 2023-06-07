@@ -28,7 +28,7 @@
                     <td th:each="article:${article}" th:text="${article.nameSales}"></td>
                     <td th:text="${traceability.numberBatch}"></td>
                     <td th:text="${traceability.expirationDate}"></td>
-                    <td> <a th:href="@{/products/productsTraceability(idsProducts=${idsProducts})}">Productos</a></td>
+                    <td> <a class="btn btn-secondary mx-md-1" th:href="@{/products/productsTraceability(idsProducts=${idsProducts})}">Productos</a></td>
                 </tr>
 
                 </tbody>

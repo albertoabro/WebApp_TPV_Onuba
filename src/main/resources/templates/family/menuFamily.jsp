@@ -17,7 +17,7 @@
             </button>
             <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
                 <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menú Empleados</h5>
+                    <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menú Familia</h5>
                     <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
@@ -26,7 +26,7 @@
                             <a class="nav-link active" aria-current="page" href="/families/registerFamily"> Nueva Familia</a>
                         </li>
                         <form class="d-flex" method="get" action="/families/searchFamily">
-                            <input class="form-control me-2" name="nameFamily" type="search" placeholder="Buscar por nombre de Familia" aria-label="Search">
+                            <input class="form-control me-2" name="nameFamily" type="search" placeholder="Buscar por nombre de familia" aria-label="Search">
                             <button class="btn btn-outline-success" type="submit">Buscar</button>
                         </form>
                     </ul>

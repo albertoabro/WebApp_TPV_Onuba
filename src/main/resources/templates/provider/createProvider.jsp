@@ -6,6 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Tpv Onuba</title>
+    <link href="../../static/styles.css"/>
 </head>
 <body>
     <section> <div th:insert="~{menu}"></div></section>
@@ -15,7 +16,7 @@
         <form method="POST" action="/providers/addProvider" th:object="${provider}" class="form">
             <div class="form-floating mb-3">
                 <input class="form-control" id="nameProvider" type="text" placeholder="Nombre" th:field="*{nameProvider}"/>
-                <label for="nameProvider">Nombre</label>
+                <label class="is-required" for="nameProvider">Nombre</label>
                 <div class="alert alert-warning" th:if="${#fields.hasErrors('nameProvider')}" th:errors="*{nameProvider}"></div>
             </div>
             <div class="form-floating mb-3">

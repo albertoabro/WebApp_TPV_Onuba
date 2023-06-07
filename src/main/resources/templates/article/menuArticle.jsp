@@ -26,7 +26,7 @@
                             <a class="nav-link active" aria-current="page" href="/articles/registerArticle"> Nuevo Artículo</a>
                         </li>
                         <form class="d-flex" method="get" action="/articles/searchArticle">
-                            <input class="form-control me-2" name="nameSales" type="search" placeholder="Buscar por nombre de Artículo" aria-label="Search">
+                            <input class="form-control me-2" name="nameArticle" type="search" placeholder="Buscar por nombre de artículo" aria-label="Search">
                             <button class="btn btn-outline-success" type="submit">Buscar</button>
                         </form>
                     </ul>

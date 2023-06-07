@@ -93,7 +93,7 @@ public class ArticleServiceImpl extends AbstractClient implements ArticleService
     @Override
     public List<Article> searchArticleByName(String name) throws JsonProcessingException {
         String searchName = name+"%";
-        String uri = baseUrl+"/articles/search"+searchName;
+        String uri = baseUrl+"/articles/search/"+searchName;
 
         ResponseEntity<List> response = restTemplate.exchange(uri, HttpMethod.GET, null, List.class);
 

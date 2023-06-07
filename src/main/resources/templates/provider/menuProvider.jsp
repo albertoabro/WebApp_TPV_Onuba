@@ -26,7 +26,7 @@
                             <a class="nav-link active" aria-current="page" href="/providers/registerProvider"> Nuevo Proveedor</a>
                         </li>
                         <form class="d-flex" method="get" action="/providers/searchProvider">
-                            <input class="form-control me-2" name="nameProvider" type="search" placeholder="Buscar por nombre Usuario" aria-label="Search">
+                            <input class="form-control me-2" name="nameProvider" type="search" placeholder="Buscar por nombre proveedor" aria-label="Search">
                             <button class="btn btn-outline-success" type="submit">Buscar</button>
                         </form>
                     </ul>
