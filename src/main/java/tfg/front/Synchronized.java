@@ -48,18 +48,19 @@ public class Synchronized{
 
         try {
             File dataBase = createAndWrite();
-            InputStream stream = new FileInputStream(dataBase);
-            UploadBuilder uploadBuilder = client.files().uploadBuilder("/Upload/" + dataBase.getName());
-            uploadBuilder.withClientModified(new Date(dataBase.lastModified()));
-            uploadBuilder.withMode(WriteMode.ADD);
-            uploadBuilder.withAutorename(true);
+            try(InputStream stream = new FileInputStream(dataBase)){
 
-            uploadBuilder.uploadAndFinish(stream);
+                UploadBuilder uploadBuilder = client.files().uploadBuilder("/Upload/" + dataBase.getName());
+                uploadBuilder.withClientModified(new Date(dataBase.lastModified()));
+                uploadBuilder.withMode(WriteMode.ADD);
+                uploadBuilder.withAutorename(true);
 
-            stream.close();
-            sqlCommands.clear();
-            dataBase.deleteOnExit();
+                uploadBuilder.uploadAndFinish(stream);
 
+                stream.close();
+                sqlCommands.clear();
+                dataBase.deleteOnExit();
+            }
         } catch (Exception e){
             e.printStackTrace();
         }
