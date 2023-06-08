@@ -14,7 +14,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import tfg.front.Synchronized;
 import tfg.front.domain.Traceability;
-import tfg.front.domain.TraceabilityToServer;
 import tfg.front.service.AbstractClient;
 
 import java.lang.reflect.Type;
@@ -87,7 +86,7 @@ public class TraceabilityServiceImpl extends AbstractClient implements Traceabil
     }
 
     @Override
-    public Traceability createTraceability(TraceabilityToServer traceability) {
+    public Traceability createTraceability(Traceability traceability) {
 
         String uri = baseUrl+TRACEABILITIES;
         Traceability traceabilityFromServer;
