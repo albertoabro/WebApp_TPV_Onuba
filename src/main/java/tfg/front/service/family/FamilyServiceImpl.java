@@ -123,7 +123,7 @@ public class FamilyServiceImpl extends AbstractClient implements FamilyService {
             ResponseEntity<Family> response = restTemplate.postForEntity(uri,family, Family.class);
             if(response.getStatusCode().is2xxSuccessful()) {
                 created = true;
-                String sql = "Insert into family values('" +family.getIdFamily()+ "', '" +family.getNameFamily()+ "')";
+                String sql = new String("Insert into family values('" +family.getIdFamily()+ "', '" +family.getNameFamily()+ "')");
                 aSynchronized.sqlCommands.add(sql);
             }
 
@@ -160,7 +160,7 @@ public class FamilyServiceImpl extends AbstractClient implements FamilyService {
     @Override
     public void delete(Family family) {
         String id = String.valueOf(family.getIdFamily());
-        String uri = baseUrl+"/families"+id;
+        String uri = baseUrl+"/families/"+id;
 
         HttpEntity<Family> entity = new HttpEntity<>(family);
         restTemplate.exchange(uri,HttpMethod.DELETE,entity, Family.class);

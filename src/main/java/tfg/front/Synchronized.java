@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import tfg.front.error.RestTemplateError;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,11 +30,12 @@ public class Synchronized{
 
         File dataBase;
         dataBase = new File("sql.txt");
-        if(dataBase.createNewFile()) {
+
+        if(dataBase.createNewFile() || dataBase.exists()) {
 
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(dataBase))) {
-
                 for (String sql : sqlCommands) {
+                    String sqlToUTF8 = new String(sql.getBytes("ISO-8859-1"), StandardCharsets.UTF_8);
                     writer.write(sql);
                     writer.newLine();
                 }
@@ -65,12 +67,13 @@ public class Synchronized{
         }
     }
 
-    public void syncDropboxWithServer(){
-
+    public boolean syncDropboxWithServer(){
+        boolean sync = false;
         try {
 
             ListFolderResult files = client.files().listFolderBuilder(path).withRecursive(true).start();
             int i = 1;
+            int numFiles = files.getEntries().size();
 
                 for(Metadata metadata : files.getEntries())
                 {
@@ -83,11 +86,16 @@ public class Synchronized{
                         client.files().deleteV2(path);
                         stream.close();
                         i++;
+
+                        if(numFiles==i-1)
+                            sync=true;
                     }
                 }
         } catch (Exception e) {
             throw new RestTemplateError(e.getMessage());
         }
+
+        return sync;
     }
 
 }

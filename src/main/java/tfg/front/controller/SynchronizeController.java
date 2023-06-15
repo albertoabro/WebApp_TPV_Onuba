@@ -63,9 +63,11 @@ public class SynchronizeController {
     public void download(HttpServletResponse response){
         Synchronized sync = terminalService.getObject();
         try {
-            sync.syncDropboxWithServer();
+            if (sync.syncDropboxWithServer())
+                response.sendRedirect("/index");
 
-            response.sendRedirect("/index");
+            else
+                response.sendRedirect("/synchronize/tickets");
         } catch (Exception e) {
             throw new RestTemplateError(e.toString());
         }
