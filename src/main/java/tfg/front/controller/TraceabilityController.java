@@ -14,7 +14,6 @@ import tfg.front.service.product.ProductService;
 import tfg.front.service.traceability.TraceabilityService;
 import tfg.front.service.traceabilityProduct.TraceabilityProductService;
 import java.util.ArrayList;
-import java.sql.Date;
 import java.util.List;
 
 @Slf4j
@@ -148,15 +147,8 @@ public class TraceabilityController {
 
         if (!productList.isEmpty()) {
 
-            TraceabilityToServer traceabilityToServer = new TraceabilityToServer();
-            Date date = Date.valueOf(traceability.getExpirationDate());
-            traceabilityToServer.setIdTraceability(traceability.getIdTraceability());
-            traceabilityToServer.setArticle(traceability.getArticle());
-            traceabilityToServer.setNumberBatch(traceability.getNumberBatch());
-            traceabilityToServer.setExpirationDate(date);
-
             for(Product product:productList)
-                traceabilityProductService.create(traceabilityToServer,product);
+                traceabilityProductService.create(traceability,product);
 
         }
         return getTraceabilities();

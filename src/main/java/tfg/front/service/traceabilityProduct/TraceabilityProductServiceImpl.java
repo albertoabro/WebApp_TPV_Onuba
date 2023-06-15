@@ -16,7 +16,6 @@ import tfg.front.Synchronized;
 import tfg.front.domain.Product;
 import tfg.front.domain.Traceability;
 import tfg.front.domain.TraceabilityProduct;
-import tfg.front.domain.TraceabilityToServer;
 import tfg.front.service.AbstractClient;
 import tfg.front.service.product.ProductService;
 import tfg.front.service.traceability.TraceabilityService;
@@ -69,7 +68,7 @@ public class TraceabilityProductServiceImpl extends AbstractClient implements Tr
     }
 
     @Override
-    public boolean create(TraceabilityToServer traceability, Product product) {
+    public boolean create(Traceability traceability, Product product) {
         boolean created = false;
         String uri = baseUrl+ TRACEABILITY;
 

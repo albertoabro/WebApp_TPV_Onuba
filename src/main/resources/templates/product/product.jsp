@@ -20,8 +20,8 @@
                         <tr>
                             <th>NOMBRE</th>
                             <th>PROVEEDOR</th>
-                            <th>CATEGORÍA</th>
                             <th>PRECIO</th>
+                            <th>CATEGORÍA</th>
                             <th>STOCK</th>
                             <th>ACCIONES</th>
                             <th> </th>
