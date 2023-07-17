@@ -121,7 +121,7 @@ public class UserServiceImpl extends AbstractClient implements UserService{
             if (response.getStatusCode().is2xxSuccessful()) {
                 created = true;
 
-                String sql = "Insert into users values('" +user.getIdUser()+ "', '" +user.getUserName()+ "', '" +user.getPassword()+ "', " +
+                String sql = "Insert into users values('" +response.getBody().getIdUser()+ "', '" +user.getUserName()+ "', '" +user.getPassword()+ "', " +
                         "'" +user.getAddress()+ "' ,'" +user.getPhone()+ "' ,'" +user.getTypeUser()+ "', '" +user.getPasswordTPV()+ "')";
 
                 aSynchronized.sqlCommands.add(sql);
