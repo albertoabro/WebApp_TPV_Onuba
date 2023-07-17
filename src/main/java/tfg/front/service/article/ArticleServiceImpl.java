@@ -109,8 +109,9 @@ public class ArticleServiceImpl extends AbstractClient implements ArticleService
             if (response.getStatusCode().is2xxSuccessful()) {
                 created = true;
 
-                String sql = "Insert into article values('" +article.getIdArticle()+ "', '" +article.getNameSales()+ "', '" +article.getPriceSales()+ "', " +
+                String sql = "Insert into article values('" +response.getBody().getIdArticle()+ "', '" +article.getNameSales()+ "', '" +article.getPriceSales()+ "', " +
                         "'" +article.getUnits()+ "' ,'" +article.getFamily()+ "' ,'" +article.getNumBatch()+ "','" +article.getStock()+ "')";
+
                 aSynchronized.sqlCommands.add(sql);
             }
 

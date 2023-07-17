@@ -123,7 +123,7 @@ public class FamilyServiceImpl extends AbstractClient implements FamilyService {
             ResponseEntity<Family> response = restTemplate.postForEntity(uri,family, Family.class);
             if(response.getStatusCode().is2xxSuccessful()) {
                 created = true;
-                String sql = new String("Insert into family values('" +family.getIdFamily()+ "', '" +family.getNameFamily()+ "')");
+                String sql = new String("Insert into family values('" +response.getBody().getIdFamily()+ "', '" +family.getNameFamily()+ "')");
                 aSynchronized.sqlCommands.add(sql);
             }
 
