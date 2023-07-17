@@ -3,6 +3,8 @@ package tfg.front;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -15,10 +17,22 @@ public class Security {
         token = getToken();
     }
 
+    private List<String> readTokenFile() throws IOException {
+        String path = "C:\\Users\\alber\\Desktop\\dataBase\\token.dat";
+        FileInputStream inputStream = new FileInputStream(path);
+        DataInputStream stream = new DataInputStream(inputStream);
+        List<String> tokens = new ArrayList<>();
+        while (stream.available()>0)
+            tokens.add(stream.readUTF().replaceFirst("\n",""));
+
+        return tokens;
+    }
+
     private String getToken() throws IOException {
 
-        String command  = "curl https://api.dropbox.com/oauth2/token -d grant_type=refresh_token -d refresh_token=UwXtnQOU_14AAAAAAAAAAcdhtiKGatt_e05G9WCB_6sUnZ-Y9J8e38NfLyStjUXx -u 2uvws8yubbya2zl:0ehhkv4p3uzrm1x";
-
+        List <String> tokens = readTokenFile();
+        String command  = "curl https://api.dropbox.com/oauth2/token -d grant_type=refresh_token -d refresh_token="+ tokens.get(3) +" -u "+ tokens.get(1) +":"+ tokens.get(2) +"";
+        log.info(command);
         Process process = Runtime.getRuntime().exec(command);
 
         InputStream stream = process.getInputStream();
