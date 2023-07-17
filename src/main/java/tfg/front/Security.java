@@ -8,14 +8,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class Security {
+public class Security{
 
     static Security security;
     String token;
+    private static final String path = new File("token.dat").getPath();
+
+
     public Security() throws IOException {
         super();
         token = getToken();
     }
+
 
     private List<String> readTokenFile() throws IOException {
         String path = "C:\\Users\\alber\\Desktop\\dataBase\\token.dat";
