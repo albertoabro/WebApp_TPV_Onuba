@@ -1,2 +1,0 @@
-Insert into article values('11', 'Tarta Manzana', '2.5', '0' ,'3' ,'6','10')
-Insert into article values('12', 'Fanta Naranja', '1.5', '0' ,'1' ,'7','10')
